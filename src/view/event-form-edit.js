@@ -4,7 +4,6 @@ import {eventProposition, eventTypes} from '../mock/event.js';
 const createEventFormEditTemplate = (event = {}) => {
   const {
     eventType = eventType.get(1),
-    eventCity = 'Amsterdam',
     eventOffers = eventOffers.get(1),
     eventDestination = '',
     eventPhotos = [],
