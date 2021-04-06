@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 
 const createTripInfoTemplate = (events) => {
   //Сортирую получные данные по дате
-  const sortTripByDate = [...events.values()]
+  const sortTripByDate = events
     .sort((a, b) => a.eventStartTime.getTime() - b.eventStartTime.getTime());
   const getTripCities = () => {
     const cities = sortTripByDate

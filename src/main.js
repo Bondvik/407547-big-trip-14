@@ -44,6 +44,6 @@ render(tripEventsElement, createEventsListTemplate(), 'beforeend');
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 render(tripEventsListElement, createEventFormEditTemplate(events[0]), 'beforeend');
 render(tripEventsListElement, createEventFormAddTemplate(), 'beforeend');
-events.forEach((event, index) => {
-  render(tripEventsListElement, createEventTemplate(event, index), 'beforeend');
+events.forEach((event) => {
+  render(tripEventsListElement, createEventTemplate(event), 'beforeend');
 });
