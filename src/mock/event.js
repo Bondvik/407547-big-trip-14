@@ -23,32 +23,88 @@ const cities = [
   'Vein',
 ];
 
-const eventTypes = new Map(
-  [
-    [1, {type:'taxi', name: 'Taxi', icon: 'taxi.png'}],
-    [2, {type:'bus', name: 'Bus', icon: 'bus.png'}],
-    [3, {type:'train', name: 'Train', icon: 'train.png'}],
-    [4, {type:'ship', name: 'Ship', icon: 'ship.png'}],
-    [5, {type:'transport', name: 'Transport', icon: 'transport.png'}],
-    [6, {type:'drive', name: 'Drive', icon: 'drive.png'}],
-    [7, {type:'flight', name: 'Flight', icon: 'flight.png'}],
-    [8, {type:'check-in', name: 'Check-in', icon: 'check-in.png'}],
-    [9, {type:'sightseeing', name: 'Sightseeing', icon: 'sightseeing.png'}],
-    [10, {type:'restaurant', name: 'Restaurant', icon: 'restaurant.png'}],
-  ],
-);
+const eventTypes = [
+  {
+    type:'taxi',
+    name: 'Taxi',
+    icon: 'taxi.png',
+  },
+  {
+    type:'bus',
+    name: 'Bus',
+    icon: 'bus.png',
+  },
+  {
+    type:'train',
+    name: 'Train',
+    icon: 'train.png',
+  },
+  {
+    type:'ship',
+    name: 'Ship',
+    icon: 'ship.png',
+  },
+  {
+    type:'transport',
+    name: 'Transport',
+    icon: 'transport.png',
+  },
+  {
+    type:'drive',
+    name: 'Drive',
+    icon: 'drive.png',
+  },
+  {
+    type:'flight',
+    name: 'Flight',
+    icon: 'flight.png',
+  },
+  {
+    type:'check-in',
+    name: 'Check-in',
+    icon: 'check-in.png',
+  },
+  {
+    type:'sightseeing',
+    name: 'Sightseeing',
+    icon: 'sightseeing.png',
+  },
+  {
+    type:'restaurant',
+    name: 'Restaurant',
+    icon: 'restaurant.png',
+  },
+];
 
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'.split('.');
 
-const eventProposition = new Map(
-  [
-    [1, {type: 'luggage', name: 'Add luggage', price: 30}],
-    [2, {type: 'comfort', name: 'Switch to comfort', price: 100}],
-    [3, {type: 'meal', name: 'Add meal', price: 15}],
-    [4, {type: 'seats', name: 'Choose seats', price: 5}],
-    [5, {type: 'train', name: 'Travel by train', price: 40}],
-  ],
-);
+const eventProposition = [
+  {
+    type: 'luggage',
+    name: 'Add luggage',
+    price: 30,
+  },
+  {
+    type: 'comfort',
+    name: 'Switch to comfort',
+    price: 100,
+  },
+  {
+    type: 'meal',
+    name: 'Add meal',
+    price: 15,
+  },
+  {
+    type: 'seats',
+    name: 'Choose seats',
+    price: 5,
+  },
+  {
+    type: 'train',
+    name: 'Travel by train',
+    price: 40,
+  },
+];
 
 const createEventTime = (date = dayjs()) => {
   return dayjs(date)
@@ -86,10 +142,11 @@ const getEventDuration = (from, end) => {
 
 const createEventOffers = () => {
   const offers = [];
-  const index = getRandomNumber(0, eventProposition.size);
+  const index = getRandomNumber(0, eventProposition.length - 1);
   for (let i = index; i > 0; i--) {
-    offers.push({eventOfferName: eventProposition.get(i).name, evantOfferPrice: eventProposition.get(i).price});
+    offers.push({eventOfferName: eventProposition[i].name, evantOfferPrice: eventProposition[i].price});
   }
+
   return offers;
 };
 
@@ -110,7 +167,7 @@ const createEvent = () => {
   const eventStartTime = createEventStartTime();
   const eventEndTime = createEventEndTime(eventStartTime);
   return {
-    eventType: eventTypes.get(getRandomNumber(0, eventTypes.size)),
+    eventType: eventTypes[getRandomNumber(0, eventTypes.length - 1)],
     eventCity: cities[getRandomNumber(0, cities.length - 1)],
     eventOffers: createEventOffers(),
     eventDestination: getEventDestination(),

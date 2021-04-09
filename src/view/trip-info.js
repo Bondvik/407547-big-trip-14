@@ -2,11 +2,9 @@ import dayjs from 'dayjs';
 
 const createTripInfoTemplate = (events) => {
   //Сортирую получные данные по дате
-  const sortTripByDate = events
-    .sort((prev, next) => prev.eventStartTime.getTime() - next.eventStartTime.getTime());
+  const sortTripByDate = events.sort((prev, next) => prev.eventStartTime.getTime() - next.eventStartTime.getTime());
   const getTripCities = () => {
-    const cities = sortTripByDate
-      .map((item) => (item.eventCity));
+    const cities = sortTripByDate.map(({eventCity}) => eventCity);
     if (cities.length > 3) {
       return `${cities[0]} &mdash; ... &mdash; ${cities[[cities.length - 1]]}`;
     }
@@ -14,12 +12,12 @@ const createTripInfoTemplate = (events) => {
       .reduce((accumulator, item, index) => {
         return (index === cities.length - 1) ? `${accumulator}${item}` : `${accumulator}${item} &mdash; `;
       }, '');
-    // .map((item, index) => (index === cities.length - 1) ? `${item}` : `${item}&mdash;`)
-    // .join('');
   };
+  const startDate = `${dayjs(sortTripByDate[0].eventStartTime).format('MMM DD')}`;
+  const endDate = `${dayjs(sortTripByDate[sortTripByDate.length - 1].eventStartTime).format('MMM DD')}`;
   const getStartEndDateByTrip = () => {
-    return `${dayjs(sortTripByDate[0].eventStartTime).format('MMM DD')}&nbsp;&mdash;&nbsp;
-    ${dayjs(sortTripByDate[sortTripByDate.length - 1].eventStartTime).format('MMM DD')}`;
+    return `${startDate}&nbsp;&mdash;&nbsp;
+    ${endDate}`;
   };
   return (
     `<section class="trip-main__trip-info  trip-info">

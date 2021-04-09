@@ -3,8 +3,8 @@ import {eventProposition, eventTypes} from '../mock/event.js';
 
 const createEventFormEditTemplate = (event = {}) => {
   const {
-    eventType = eventType.get(1),
-    eventOffers = eventOffers.get(1),
+    eventType = eventType[1],
+    eventOffers = [],
     eventDestination = '',
     eventPhotos = [],
     eventStartTime = dayjs(),
@@ -12,24 +12,27 @@ const createEventFormEditTemplate = (event = {}) => {
     eventTotal = null,
   } = event;
   const createEventOfferSelector = () => {
-    const getOffers = () => {
-      return eventOffers.map((item) => item.eventOfferName);
-    };
-    return [...eventProposition.values()]
-      .map((item) =>`<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.type}-1" type="checkbox" name="event-offer-${item.type}" ${(getOffers().includes(item.name)) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-luggage-1">
-      <span class="event__offer-title">${item.name}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${item.price}</span>
-      </label>
-      </div>`)
-      .join('');
+    const offers = eventOffers.map(({eventOfferName}) => eventOfferName);
+    return eventProposition
+      .reduce((accumulator, item) => {
+        accumulator +=
+        `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.type}-1" type="checkbox" name="event-offer-${item.type}" ${(offers.includes(item.name)) ? 'checked' : ''}>
+          <label class="event__offer-label" for="event-offer-luggage-1">
+          <span class="event__offer-title">${item.name}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${item.price}</span>
+          </label>
+        </div>`;
+        return accumulator;
+      }, '');
   };
   const getPhotos = () => {
     const eventListPhotos = eventPhotos
-      .map((item) => `<img class="event__photo" src="${item}" alt="Event photo">`)
-      .join('');
+      .reduce((accumulator, item) => {
+        accumulator += `<img class="event__photo" src="${item}" alt="Event photo">`;
+        return accumulator;
+      },'');
     if (eventListPhotos.lenght) {
       return `
         <div class="event__photos-container">

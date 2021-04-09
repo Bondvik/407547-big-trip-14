@@ -4,13 +4,14 @@ import {getRandomNumber} from '../mock/util.js';
 
 const createEventTemplate = (event) => {
   const getOffers = () => {
-    return event
-      .eventOffers.map((item) => `<li class="event__offer">
+    return event.eventOffers.reduce((accumulator, item) => {
+      accumulator += `<li class="event__offer">
         <span class="event__offer-title">${item.eventOfferName}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${item.evantOfferPrice}</span>
-        </li>`)
-      .join('');
+        </li>`;
+      return accumulator;
+    }, '');
   };
   return (
     `<li class="trip-events__item">
