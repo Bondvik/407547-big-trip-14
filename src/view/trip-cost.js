@@ -19,4 +19,4 @@ const calculateAllEvantOfferPrice = (offers) => {
   }, 0);
 };
 
-export { createTripCostTemplate };
+export {createTripCostTemplate};

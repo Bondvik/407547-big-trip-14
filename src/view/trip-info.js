@@ -29,4 +29,4 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export { createTripInfoTemplate };
+export {createTripInfoTemplate};
