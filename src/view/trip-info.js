@@ -15,15 +15,11 @@ const createTripInfoTemplate = (events) => {
   };
   const startDate = `${dayjs(sortTripByDate[0].eventStartTime).format('MMM DD')}`;
   const endDate = `${dayjs(sortTripByDate[sortTripByDate.length - 1].eventStartTime).format('MMM DD')}`;
-  const getStartEndDateByTrip = () => {
-    return `${startDate}&nbsp;&mdash;&nbsp;
-    ${endDate}`;
-  };
   return (
     `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
             <h1 class="trip-info__title">${getTripCities()}</h1>
-            <p class="trip-info__dates">${getStartEndDateByTrip()}</p>
+            <p class="trip-info__dates">${startDate} &mdash; ${endDate}</p>
         </div>
       </section>`
   );
