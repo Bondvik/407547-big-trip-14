@@ -11,6 +11,7 @@ const createEventTemplate = (event) => {
       <span class="event__offer-price">${item.evantOfferPrice}</span>
     </li>`
   );
+  const eventSelectedOffers = event.eventOffers.reduce((accumulator, item) => accumulator + getEventOffer(item), '');
   return (
     `<li class="trip-events__item">
       <div class="event">
