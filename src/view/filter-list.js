@@ -8,7 +8,7 @@ const createFilterItemTemplate = ({name, count}) => (
 );
 
 const createFilterListTemplate = (filterItems) => {
-  const filterItemsTemplate = filterItems.reduce((accumulator, filter) => accumulator += createFilterItemTemplate(filter), '');
+  const filterItemsTemplate = filterItems.reduce((accumulator, filter) => accumulator + createFilterItemTemplate(filter), '');
   return (
     `<form class="trip-filters" action="#" method="get">
       ${filterItemsTemplate}

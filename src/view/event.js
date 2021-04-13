@@ -3,10 +3,8 @@ import {getEventDuration} from '../mock/event.js';
 import {getRandomNumber} from '../mock/util.js';
 
 const createEventTemplate = (event) => {
-  const getOffers = () => {
-    return event.eventOffers.reduce((accumulator, item) => accumulator += getEventOfferView(item), '');
-  };
-  const getEventOfferView = (item) => (
+  const eventSelectedOffers = event.eventOffers.reduce((accumulator, item) => accumulator + getEventOffer(item), '');
+  const getEventOffer = (item) => (
     `<li class="event__offer">
       <span class="event__offer-title">${item.eventOfferName}</span>
       &plus;&euro;&nbsp;
@@ -34,7 +32,7 @@ const createEventTemplate = (event) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${getOffers()}
+          ${eventSelectedOffers}
         </ul>
         <button class="event__favorite-btn ${(getRandomNumber(0, 1)) ? 'event__favorite-btn--active' : ''}" type="button">
           <span class="visually-hidden">Add to favorite</span>

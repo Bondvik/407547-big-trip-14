@@ -13,7 +13,7 @@ const createEventFormEditTemplate = (event = {}) => {
   } = event;
   const createEventOfferSelector = () => {
     const offers = eventOffers.map(({eventOfferName}) => eventOfferName);
-    return eventProposition.reduce((accumulator, item) => accumulator += getEventOfferView(offers, item), '');
+    return eventProposition.reduce((accumulator, item) => accumulator + getEventOfferView(offers, item), '');
   };
   const getEventOfferView = (offers, item) => (
     `<div class="event__offer-selector">
