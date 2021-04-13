@@ -1,3 +1,33 @@
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+// Принцип работы прост:
+// 1. создаём пустой div-блок
+// 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент
+// 3. возвращаем этот DOM-элемент
+const createElement = (template) => {
+  const newElement = document.createElement('div'); // 1
+  newElement.innerHTML = template; // 2
+  return newElement.firstChild; // 3
+};
+
 //Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 const getRandomNumber = function(min, max) {
   let minValue =  Math.ceil(min);
@@ -15,4 +45,4 @@ const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
 };
 
-export {getRandomNumber};
+export {RenderPosition, renderElement, renderTemplate, createElement, getRandomNumber};
