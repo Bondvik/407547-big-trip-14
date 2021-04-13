@@ -144,7 +144,11 @@ const createEventOffers = () => {
   const offers = [];
   const index = getRandomNumber(0, eventProposition.length - 1);
   for (let i = index; i > 0; i--) {
-    offers.push({eventOfferName: eventProposition[i].name, evantOfferPrice: eventProposition[i].price});
+    const {name, price} = eventProposition[i];
+    offers.push({
+      eventOfferName: name,
+      evantOfferPrice: price,
+    });
   }
 
   return offers;

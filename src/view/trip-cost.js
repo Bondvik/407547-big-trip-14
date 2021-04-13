@@ -1,22 +1,22 @@
 const createTripCostTemplate = (events) => {
-  const offersPrice = events.reduce((accumulator, item) => {
-    const offers = item.eventOffers;
-    accumulator.offer += calculateAllEvantOfferPrice(offers);
-    accumulator.trip += item.eventTotal;
-    return accumulator;
-  }, { trip: 0, offer: 0 });
+  const offersPrice = {
+    trip: 0,
+    offer: 0,
+  };
+  events.forEach(({eventOffers, eventTotal}) => {
+    offersPrice.trip += eventTotal;
+    offersPrice.offer += getTotalPriceOfAllEvents(eventOffers);
+  });
   const tripTotalPrice = offersPrice.trip + offersPrice.offer;
   return (
     `<p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripTotalPrice}</span>
-      </p>`
+      Total:&euro;&nbsp;<span class="trip-info__cost-value">${tripTotalPrice}</span>
+    </p>`
   );
 };
 
-const calculateAllEvantOfferPrice = (offers) => {
-  return offers.reduce((accumulator, offer) => {
-    return accumulator + offer.evantOfferPrice;
-  }, 0);
+const getTotalPriceOfAllEvents = (offers) => {
+  return offers.reduce((accumulator, offer) => accumulator + offer.evantOfferPrice, 0);
 };
 
 export {createTripCostTemplate};

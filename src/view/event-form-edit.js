@@ -13,33 +13,28 @@ const createEventFormEditTemplate = (event = {}) => {
   } = event;
   const createEventOfferSelector = () => {
     const offers = eventOffers.map(({eventOfferName}) => eventOfferName);
-    return eventProposition
-      .reduce((accumulator, item) => {
-        accumulator +=
-        `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.type}-1" type="checkbox" name="event-offer-${item.type}" ${(offers.includes(item.name)) ? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-luggage-1">
-          <span class="event__offer-title">${item.name}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${item.price}</span>
-          </label>
-        </div>`;
-        return accumulator;
-      }, '');
+    return eventProposition.reduce((accumulator, item) => accumulator += getEventOfferView(offers, item), '');
   };
+  const getEventOfferView = (offers, item) => (
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.type}-1" type="checkbox" name="event-offer-${item.type}" ${(offers.includes(item.name)) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-luggage-1">
+        <span class="event__offer-title">${item.name}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${item.price}</span>
+      </label>
+    </div>`
+  );
   const getPhotos = () => {
-    const eventListPhotos = eventPhotos
-      .reduce((accumulator, item) => {
-        accumulator += `<img class="event__photo" src="${item}" alt="Event photo">`;
-        return accumulator;
-      },'');
+    const eventListPhotos = eventPhotos.reduce((accumulator, item) => accumulator + `<img class="event__photo" src="${item}" alt="Event photo">`, '');
     if (eventListPhotos.lenght) {
-      return `
-        <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${eventListPhotos}
-        </div>
-      </div>`;
+      return (
+        `<div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${eventListPhotos}
+          </div>
+        </div>`
+      );
     }
     return '';
   };
@@ -67,7 +62,7 @@ const createEventFormEditTemplate = (event = {}) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-            ${eventType.name}
+              ${eventType.name}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.eventCity}" list="destination-list-1">
             <datalist id="destination-list-1">

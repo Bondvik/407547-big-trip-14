@@ -8,20 +8,17 @@ const createTripInfoTemplate = (events) => {
     if (cities.length > 3) {
       return `${cities[0]} &mdash; ... &mdash; ${cities[[cities.length - 1]]}`;
     }
-    return cities
-      .reduce((accumulator, item, index) => {
-        return (index === cities.length - 1) ? `${accumulator}${item}` : `${accumulator}${item} &mdash; `;
-      }, '');
+    return cities.join(' &mdash; ');
   };
   const startDate = `${dayjs(sortTripByDate[0].eventStartTime).format('MMM DD')}`;
   const endDate = `${dayjs(sortTripByDate[sortTripByDate.length - 1].eventStartTime).format('MMM DD')}`;
   return (
     `<section class="trip-main__trip-info  trip-info">
-        <div class="trip-info__main">
-            <h1 class="trip-info__title">${getTripCities()}</h1>
-            <p class="trip-info__dates">${startDate} &mdash; ${endDate}</p>
-        </div>
-      </section>`
+      <div class="trip-info__main">
+        <h1 class="trip-info__title">${getTripCities()}</h1>
+        <p class="trip-info__dates">${startDate} &mdash; ${endDate}</p>
+      </div>
+    </section>`
   );
 };
 
