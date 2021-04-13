@@ -3,7 +3,6 @@ import {getEventDuration} from '../mock/event.js';
 import {getRandomNumber} from '../mock/util.js';
 
 const createEventTemplate = (event) => {
-  const eventSelectedOffers = event.eventOffers.reduce((accumulator, item) => accumulator + getEventOffer(item), '');
   const getEventOffer = (item) => (
     `<li class="event__offer">
       <span class="event__offer-title">${item.eventOfferName}</span>
