@@ -1,10 +1,9 @@
-import {RenderPosition, renderTemplate} from './mock/util.js';
+import {RenderPosition, renderElement, renderTemplate} from './mock/util.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createPageNavigationTemplate} from './view/page-navigation.js';
 import {createTripCostTemplate} from './view/trip-cost.js';
 import {createFilterListTemplate} from './view/filter-list.js';
 import {createSortListTemplate} from './view/sort-list.js';
-//import {createEventsListTemplate} from './view/events-list.js';
 import EventsListView from './view/events-list.js';
 import {createEventTemplate} from './view/event.js';
 import {createEventFormEditTemplate} from './view/event-form-edit.js';
@@ -38,7 +37,7 @@ const tripEventsElement = pageMainElement.querySelector('.trip-events');
 renderTemplate(tripEventsElement, createSortListTemplate(), 'afterbegin');
 
 //Точки маршрута и формы добавления/редактирования маршрута
-renderTemplate(tripEventsElement, new EventsListView().getElement(), RenderPosition.BEFOREEND);
+renderElement(tripEventsElement, new EventsListView().getElement(), RenderPosition.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 renderTemplate(tripEventsListElement, createEventFormEditTemplate(events[0]), 'beforeend');
 renderTemplate(tripEventsListElement, createEventFormAddTemplate(), 'beforeend');
