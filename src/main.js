@@ -7,7 +7,8 @@ import SortView from './view/sort-list.js';
 import EventsListView from './view/events-list.js';
 import EventView from './view/event.js';
 import EventFormEditView from './view/event-form-edit.js';
-import EventFormAddView from './view/event-form-add.js';
+//TODO: расскоментировать, когда добавлять новые точки маршрута
+//import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
 import {createFilter} from './mock/filter.js';
 
