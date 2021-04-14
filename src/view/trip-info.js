@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {createElement} from '../mock/util.js';
 
 const createTripInfoTemplate = (events) => {
   //Сортирую получные данные по дате
@@ -22,4 +23,25 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export {createTripInfoTemplate};
+export default class TripInfo {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

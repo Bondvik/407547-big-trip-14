@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {getEventDuration} from '../mock/event.js';
-import {getRandomNumber} from '../mock/util.js';
+import {getRandomNumber, createElement} from '../mock/util.js';
 
 const createEventTemplate = (event) => {
   const getEventOffer = (item) => (
@@ -48,4 +48,26 @@ const createEventTemplate = (event) => {
   );
 };
 
-export {createEventTemplate};
+export default class Event {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

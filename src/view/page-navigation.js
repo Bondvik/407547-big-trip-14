@@ -1,3 +1,5 @@
+import {createElement} from '../mock/util.js';
+
 const createPageNavigationTemplate = () => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -7,4 +9,24 @@ const createPageNavigationTemplate = () => {
   );
 };
 
-export {createPageNavigationTemplate};
+export default class PageNavigation {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPageNavigationTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from '../mock/util.js';
+
 const createEventFormAddTemplate = () => {
   return (
     `<li class="trip-events__item">
@@ -169,4 +171,24 @@ const createEventFormAddTemplate = () => {
   );
 };
 
-export {createEventFormAddTemplate};
+export default class EventFormAdd {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventFormAddTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

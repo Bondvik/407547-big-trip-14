@@ -1,18 +1,20 @@
 import dayjs from 'dayjs';
 import {eventProposition, eventTypes} from '../mock/event.js';
+import {createElement} from '../mock/util.js';
 
-const createEventFormEditTemplate = (event = {}) => {
-  const {
-    eventType = eventType[1],
-    eventOffers = [],
-    eventDestination = '',
-    eventPhotos = [],
-    eventStartTime = dayjs(),
-    eventEndTime = dayjs(eventStartTime).add(1, 'hour'),
-    eventTotal = null,
-  } = event;
+const BLANK_EVENT = {
+  eventType: eventTypes[1],
+  eventOffers: [],
+  eventDestination:'',
+  eventPhotos: [],
+  eventStartTime: dayjs(),
+  eventEndTime: dayjs().add(1, 'hour'),
+  eventTotal: null,
+};
+
+const createEventFormEditTemplate = (event) => {
   const createEventOfferSelector = () => {
-    const offers = eventOffers.map(({eventOfferName}) => eventOfferName);
+    const offers = event.eventOffers.map(({eventOfferName}) => eventOfferName);
     return eventProposition.reduce((accumulator, item) => accumulator + getEventOfferView(offers, item), '');
   };
   const getEventOfferView = (offers, item) => (
@@ -26,7 +28,7 @@ const createEventFormEditTemplate = (event = {}) => {
     </div>`
   );
   const getPhotos = () => {
-    const eventListPhotos = eventPhotos.reduce((accumulator, item) => accumulator + `<img class="event__photo" src="${item}" alt="Event photo">`, '');
+    const eventListPhotos = event.eventPhotos.reduce((accumulator, item) => accumulator + `<img class="event__photo" src="${item}" alt="Event photo">`, '');
     if (eventListPhotos.lenght) {
       return (
         `<div class="event__photos-container">
@@ -45,7 +47,7 @@ const createEventFormEditTemplate = (event = {}) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.icon}" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${event.eventType.icon}" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -62,7 +64,7 @@ const createEventFormEditTemplate = (event = {}) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${eventType.name}
+              ${event.eventType.name}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.eventCity}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -74,10 +76,10 @@ const createEventFormEditTemplate = (event = {}) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(eventStartTime).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(event.eventStartTime).format('DD/MM/YY HH:mm')}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(eventEndTime).format('DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(event.eventEndTime).format('DD/MM/YY HH:mm')}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -85,7 +87,7 @@ const createEventFormEditTemplate = (event = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventTotal}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.eventTotal}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -104,7 +106,7 @@ const createEventFormEditTemplate = (event = {}) => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${eventDestination}</p>
+            <p class="event__destination-description">${event.eventDestination}</p>
             ${getPhotos()}
           </section>
         </section>
@@ -113,4 +115,25 @@ const createEventFormEditTemplate = (event = {}) => {
   );
 };
 
-export {createEventFormEditTemplate};
+export default class EventFormEdit {
+  constructor(event = BLANK_EVENT) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventFormEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

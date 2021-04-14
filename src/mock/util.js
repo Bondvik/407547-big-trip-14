@@ -3,7 +3,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -12,10 +12,6 @@ const renderElement = (container, element, place) => {
       container.append(element);
       break;
   }
-};
-
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
 };
 
 // Принцип работы прост:
@@ -45,4 +41,4 @@ const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
 };
 
-export {RenderPosition, renderElement, renderTemplate, createElement, getRandomNumber};
+export {RenderPosition, render, createElement, getRandomNumber};
