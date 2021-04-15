@@ -1,19 +1,15 @@
 import {createElement} from '../mock/util.js';
 
-const createEventsListTemplate = () => {
-  return (
-    `<ul class="trip-events__list">
-    </ul>`
-  );
-};
-
 export default class EventsList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createEventsListTemplate();
+    return (
+      `<ul class="trip-events__list">
+      </ul>`
+    );
   }
 
   getElement() {

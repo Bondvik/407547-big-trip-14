@@ -1,14 +1,14 @@
-const RenderPosition = {
+const PositionOfRender = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
 
 const render = (container, element, place) => {
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
+    case PositionOfRender.AFTERBEGIN:
       container.prepend(element);
       break;
-    case RenderPosition.BEFOREEND:
+    case PositionOfRender.BEFOREEND:
       container.append(element);
       break;
   }
@@ -41,4 +41,4 @@ const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
 };
 
-export {RenderPosition, render, createElement, getRandomNumber};
+export {PositionOfRender, render, createElement, getRandomNumber};

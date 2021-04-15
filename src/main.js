@@ -1,4 +1,4 @@
-import {RenderPosition, render} from './mock/util.js';
+import {PositionOfRender, render} from './mock/util.js';
 import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
@@ -32,38 +32,38 @@ const renderEvent = (tripEventsElement, event) => {
     evt.preventDefault();
     replaceFormToCard();
   });
-  render(tripEventsElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, eventComponent.getElement(), PositionOfRender.BEFOREEND);
 };
 
 //Инфо о маршруте
 const tripMainElement = document.querySelector('.trip-main');
 const TripInfoComponent = new TripInfoView(events);
-render(tripMainElement, TripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, TripInfoComponent.getElement(), PositionOfRender.AFTERBEGIN);
 
 //Стоимость маршрута
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 const TripCostComponent = new TripCostView(events);
-render(tripInfoElement, TripCostComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, TripCostComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Навигация
 const pageNavigationElement = document.querySelector('.trip-controls__navigation');
 const pageNavigationComponent = new PageNavigationView();
-render(pageNavigationElement, pageNavigationComponent.getElement(), RenderPosition.BEFOREEND);
+render(pageNavigationElement, pageNavigationComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Фильтры
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
 const filterListComponent = new FilterView(filters);
-render(tripControlsFiltersElement, filterListComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripControlsFiltersElement, filterListComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Сортировка
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 const sortComponent = new SortView();
-render(tripEventsElement, sortComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsElement, sortComponent.getElement(), PositionOfRender.AFTERBEGIN);
 
 //Точки маршрута и формы добавления/редактирования маршрута
 const eventsListComponent = new EventsListView();
-render(tripEventsElement, eventsListComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, eventsListComponent.getElement(), PositionOfRender.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 
 events.forEach((event) => {
