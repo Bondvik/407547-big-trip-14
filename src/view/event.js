@@ -26,16 +26,16 @@ export default class Event {
     return (
       `<li class="trip-events__item">
         <div class="event">
-          <time class="event__date" datetime="2019-03-18">${dayjs(this._event.eventStartTime).format('MMM DD')}</time>
+          <time class="event__date" datetime=${dayjs(this._event.eventStartTime).format('YYYY-MM-DD')}>${dayjs(this._event.eventStartTime).format('MMM DD')}</time>
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${this._event.eventType.icon}" alt="Event type icon">
           </div>
           <h3 class="event__title">${this._event.eventType.name} ${this._event.eventCity}</h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${dayjs(this._event.eventStartTime).format('HH:mm')}</time>
+              <time class="event__start-time" datetime=${dayjs(this._event.eventStartTime).format('YYYY-MM-DDTHH:mm')}>${dayjs(this._event.eventStartTime).format('HH:mm')}</time>
               &mdash;
-              <time class="event__end-time" datetime="2019-03-18T11:00">${dayjs(this._event.eventEndTime).format('HH:mm')}</time>
+              <time class="event__end-time" datetime=${dayjs(this._event.eventEndTime).format('YYYY-MM-DDTHH:mm')}>${dayjs(this._event.eventEndTime).format('HH:mm')}</time>
             </p>
             <p class="event__duration">${getEventDuration(this._event.eventStartTime, this._event.eventEndTime)}</p>
           </div>
@@ -56,7 +56,8 @@ export default class Event {
             <span class="visually-hidden">Open event</span>
           </button>
         </div>
-      </li>`);
+      </li>`
+    );
   }
 
   getElement() {
