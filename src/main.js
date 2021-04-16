@@ -7,6 +7,7 @@ import SortView from './view/sort-list.js';
 import EventsListView from './view/events-list.js';
 import EventView from './view/event.js';
 import EventFormEditView from './view/event-form-edit.js';
+import ListEmptyView from './view/list-empty.js';
 //TODO: расскоментировать, когда добавлять новые точки маршрута
 //import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
@@ -25,12 +26,21 @@ const renderEvent = (tripEventsElement, event) => {
   const replaceFormToCard = () => {
     tripEventsElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
   eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
   eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
   render(tripEventsElement, eventComponent.getElement(), PositionOfRender.BEFOREEND);
 };
@@ -66,6 +76,12 @@ const eventsListComponent = new EventsListView();
 render(tripEventsElement, eventsListComponent.getElement(), PositionOfRender.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 
-events.forEach((event) => {
-  renderEvent(tripEventsListElement, event);
-});
+//Если нет точек маршрута, то отрисовать заглушку
+const listEmptyComponent = new ListEmptyView();
+if (events.length === 0) {
+  render(tripEventsListElement, listEmptyComponent.getElement(), PositionOfRender.BEFOREEND);
+} else {
+  events.forEach((event) => {
+    renderEvent(tripEventsListElement, event);
+  });
+}
