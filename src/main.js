@@ -1,12 +1,14 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
-import {createPageNavigationTemplate} from './view/page-navigation.js';
-import {createTripCostTemplate} from './view/trip-cost.js';
-import {createFilterListTemplate} from './view/filter-list.js';
-import {createSortListTemplate} from './view/sort-list.js';
-import {createEventsListTemplate} from './view/events-list.js';
-import {createEventTemplate} from './view/event.js';
-import {createEventFormEditTemplate} from './view/event-form-edit.js';
-import {createEventFormAddTemplate} from './view/event-form-add.js';
+import {PositionOfRender, render} from './mock/util.js';
+import TripInfoView from './view/trip-info.js';
+import PageNavigationView from './view/page-navigation.js';
+import TripCostView from './view/trip-cost.js';
+import FilterView from './view/filter-list.js';
+import SortView from './view/sort-list.js';
+import EventsListView from './view/events-list.js';
+import EventView from './view/event.js';
+import EventFormEditView from './view/event-form-edit.js';
+//TODO: расскоментировать, когда добавлять новые точки маршрута
+//import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
 import {createFilter} from './mock/filter.js';
 
@@ -14,36 +16,56 @@ const EVENT_COUNT = 15;
 const events = new Array(EVENT_COUNT).fill().map(createEvent);
 const filters = createFilter(events);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const renderEvent = (tripEventsElement, event) => {
+  const eventComponent = new EventView(event);
+  const eventEditComponent = new EventFormEditView(event);
+  const replaceCardToForm = () => {
+    tripEventsElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+  const replaceFormToCard = () => {
+    tripEventsElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+  });
+  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+  render(tripEventsElement, eventComponent.getElement(), PositionOfRender.BEFOREEND);
 };
 
 //Инфо о маршруте
 const tripMainElement = document.querySelector('.trip-main');
-render(tripMainElement, createTripInfoTemplate(events), 'afterbegin');
+const TripInfoComponent = new TripInfoView(events);
+render(tripMainElement, TripInfoComponent.getElement(), PositionOfRender.AFTERBEGIN);
 
 //Стоимость маршрута
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
-render(tripInfoElement, createTripCostTemplate(events), 'beforeend');
+const TripCostComponent = new TripCostView(events);
+render(tripInfoElement, TripCostComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Навигация
 const pageNavigationElement = document.querySelector('.trip-controls__navigation');
-render(pageNavigationElement, createPageNavigationTemplate(), 'beforeend');
+const pageNavigationComponent = new PageNavigationView();
+render(pageNavigationElement, pageNavigationComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Фильтры
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, createFilterListTemplate(filters), 'beforeend');
+const filterListComponent = new FilterView(filters);
+render(tripControlsFiltersElement, filterListComponent.getElement(), PositionOfRender.BEFOREEND);
 
 //Сортировка
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
-render(tripEventsElement, createSortListTemplate(), 'afterbegin');
+const sortComponent = new SortView();
+render(tripEventsElement, sortComponent.getElement(), PositionOfRender.AFTERBEGIN);
 
 //Точки маршрута и формы добавления/редактирования маршрута
-render(tripEventsElement, createEventsListTemplate(), 'beforeend');
+const eventsListComponent = new EventsListView();
+render(tripEventsElement, eventsListComponent.getElement(), PositionOfRender.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
-render(tripEventsListElement, createEventFormEditTemplate(events[0]), 'beforeend');
-render(tripEventsListElement, createEventFormAddTemplate(), 'beforeend');
+
 events.forEach((event) => {
-  render(tripEventsListElement, createEventTemplate(event), 'beforeend');
+  renderEvent(tripEventsListElement, event);
 });
