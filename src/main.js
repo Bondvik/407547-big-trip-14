@@ -16,6 +16,7 @@ import {createFilter} from './mock/filter.js';
 const EVENT_COUNT = 15;
 const events = new Array(EVENT_COUNT).fill().map(createEvent);
 const filters = createFilter(events);
+const fragment = document.createDocumentFragment();
 
 const renderEvent = (tripEventsElement, event) => {
   const eventComponent = new EventView(event);
@@ -27,22 +28,24 @@ const renderEvent = (tripEventsElement, event) => {
     tripEventsElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (['Escape', 'Esc'].includes(evt.key)) {
       evt.preventDefault();
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     }
   };
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceCardToForm();
-    document.addEventListener('keydown', onEscKeyDown);
+  eventComponent.getElement().addEventListener('click', (evt) => {
+    if(evt.target.classList.contains('event__rollup-btn')) {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    }
   });
   eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
-  render(tripEventsElement, eventComponent.getElement(), PositionOfRender.BEFOREEND);
+  return eventComponent.getElement();
 };
 
 //Инфо о маршруте
@@ -78,10 +81,11 @@ const tripEventsListElement = pageMainElement.querySelector('.trip-events__list'
 
 //Если нет точек маршрута, то отрисовать заглушку
 const listEmptyComponent = new ListEmptyView();
-if (events.length === 0) {
-  render(tripEventsListElement, listEmptyComponent.getElement(), PositionOfRender.BEFOREEND);
-} else {
+if (events.length) {
   events.forEach((event) => {
-    renderEvent(tripEventsListElement, event);
+    fragment.appendChild(renderEvent(tripEventsListElement, event));
   });
+} else {
+  render(tripEventsListElement, listEmptyComponent.getElement(), PositionOfRender.BEFOREEND);
 }
+render(tripEventsElement, tripEventsListElement.appendChild(fragment), PositionOfRender.BEFOREEND);
