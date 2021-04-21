@@ -42,6 +42,10 @@ const renderEvent = (event) => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
+  eventEditComponent.setFormClicktHandler(() => {
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
   return eventComponent.getElement();
 };
 

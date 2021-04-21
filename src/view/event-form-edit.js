@@ -7,6 +7,7 @@ export default class EventFormEdit extends AbstractView{
     super();
     this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formClickHandler = this._formClickHandler.bind(this);
   }
 
   _getEventOfferSelector() {
@@ -122,8 +123,18 @@ export default class EventFormEdit extends AbstractView{
     this._callback.formSubmit();
   }
 
+  _formClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formClick();
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setFormClicktHandler(callback) {
+    this._callback.formClick = callback;
+    this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
   }
 }
