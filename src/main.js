@@ -1,4 +1,4 @@
-import {PositionOfRender, render} from './mock/util.js';
+import {render, PositionOfRender, replace} from './mock/render.js';
 import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
@@ -18,14 +18,14 @@ const events = new Array(EVENT_COUNT).fill().map(createEvent);
 const filters = createFilter(events);
 const fragment = document.createDocumentFragment();
 
-const renderEvent = (tripEventsElement, event) => {
+const renderEvent = (event) => {
   const eventComponent = new EventView(event);
   const eventEditComponent = new EventFormEditView(event);
   const replaceCardToForm = () => {
-    tripEventsElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
   const replaceFormToCard = () => {
-    tripEventsElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
   const onEscKeyDown = (evt) => {
     if (['Escape', 'Esc'].includes(evt.key)) {
@@ -34,14 +34,11 @@ const renderEvent = (tripEventsElement, event) => {
       document.removeEventListener('keydown', onEscKeyDown);
     }
   };
-  eventComponent.getElement().addEventListener('click', (evt) => {
-    if(evt.target.classList.contains('event__rollup-btn')) {
-      replaceCardToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    }
+  eventComponent.setEditClickHandler(() => {
+    replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
-  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
@@ -56,36 +53,36 @@ render(tripMainElement, TripInfoComponent.getElement(), PositionOfRender.AFTERBE
 //Стоимость маршрута
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 const TripCostComponent = new TripCostView(events);
-render(tripInfoElement, TripCostComponent.getElement(), PositionOfRender.BEFOREEND);
+render(tripInfoElement, TripCostComponent, PositionOfRender.BEFOREEND);
 
 //Навигация
 const pageNavigationElement = document.querySelector('.trip-controls__navigation');
 const pageNavigationComponent = new PageNavigationView();
-render(pageNavigationElement, pageNavigationComponent.getElement(), PositionOfRender.BEFOREEND);
+render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
 
 //Фильтры
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
 const filterListComponent = new FilterView(filters);
-render(tripControlsFiltersElement, filterListComponent.getElement(), PositionOfRender.BEFOREEND);
+render(tripControlsFiltersElement, filterListComponent, PositionOfRender.BEFOREEND);
 
 //Сортировка
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 const sortComponent = new SortView();
-render(tripEventsElement, sortComponent.getElement(), PositionOfRender.AFTERBEGIN);
+render(tripEventsElement, sortComponent, PositionOfRender.AFTERBEGIN);
 
 //Точки маршрута и формы добавления/редактирования маршрута
 const eventsListComponent = new EventsListView();
-render(tripEventsElement, eventsListComponent.getElement(), PositionOfRender.BEFOREEND);
+render(tripEventsElement, eventsListComponent, PositionOfRender.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 
 //Если нет точек маршрута, то отрисовать заглушку
 const listEmptyComponent = new ListEmptyView();
 if (events.length) {
   events.forEach((event) => {
-    fragment.appendChild(renderEvent(tripEventsListElement, event));
+    fragment.appendChild(renderEvent(event));
   });
 } else {
-  render(tripEventsListElement, listEmptyComponent.getElement(), PositionOfRender.BEFOREEND);
+  render(tripEventsListElement, listEmptyComponent, PositionOfRender.BEFOREEND);
 }
 render(tripEventsElement, tripEventsListElement.appendChild(fragment), PositionOfRender.BEFOREEND);

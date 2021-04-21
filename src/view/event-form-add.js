@@ -1,10 +1,6 @@
-import {createElement} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class EventFormAdd {
-  constructor() {
-    this._element = null;
-  }
-
+export default class EventFormAdd extends AbstractView{
   getTemplate() {
     return (
       `<li class="trip-events__item">
@@ -174,17 +170,5 @@ export default class EventFormAdd {
         </form>
       </li>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
