@@ -7,6 +7,7 @@ import SortView from './view/sort-list.js';
 import EventsListView from './view/events-list.js';
 import EventView from './view/event.js';
 import EventFormEditView from './view/event-form-edit.js';
+import ListEmptyView from './view/list-empty.js';
 //TODO: расскоментировать, когда добавлять новые точки маршрута
 //import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
@@ -15,6 +16,7 @@ import {createFilter} from './mock/filter.js';
 const EVENT_COUNT = 15;
 const events = new Array(EVENT_COUNT).fill().map(createEvent);
 const filters = createFilter(events);
+const fragment = document.createDocumentFragment();
 
 const renderEvent = (tripEventsElement, event) => {
   const eventComponent = new EventView(event);
@@ -25,14 +27,25 @@ const renderEvent = (tripEventsElement, event) => {
   const replaceFormToCard = () => {
     tripEventsElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceCardToForm();
+  const onEscKeyDown = (evt) => {
+    if (['Escape', 'Esc'].includes(evt.key)) {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+  eventComponent.getElement().addEventListener('click', (evt) => {
+    if(evt.target.classList.contains('event__rollup-btn')) {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    }
   });
   eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
-  render(tripEventsElement, eventComponent.getElement(), PositionOfRender.BEFOREEND);
+  return eventComponent.getElement();
 };
 
 //Инфо о маршруте
@@ -66,6 +79,13 @@ const eventsListComponent = new EventsListView();
 render(tripEventsElement, eventsListComponent.getElement(), PositionOfRender.BEFOREEND);
 const tripEventsListElement = pageMainElement.querySelector('.trip-events__list');
 
-events.forEach((event) => {
-  renderEvent(tripEventsListElement, event);
-});
+//Если нет точек маршрута, то отрисовать заглушку
+const listEmptyComponent = new ListEmptyView();
+if (events.length) {
+  events.forEach((event) => {
+    fragment.appendChild(renderEvent(tripEventsListElement, event));
+  });
+} else {
+  render(tripEventsListElement, listEmptyComponent.getElement(), PositionOfRender.BEFOREEND);
+}
+render(tripEventsElement, tripEventsListElement.appendChild(fragment), PositionOfRender.BEFOREEND);
