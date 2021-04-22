@@ -1,27 +1,11 @@
-import {createElement} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class ListEmpty {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ListEmpty extends AbstractView{
   getTemplate() {
     return (
       `<p class="trip-events__msg">
         Click New Event to create your first point
       </p>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
