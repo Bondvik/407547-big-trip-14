@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import {eventProposition, eventTypes} from '../mock/event.js';
-import {createElement} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class EventFormEdit {
+export default class EventFormEdit extends AbstractView{
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formClickHandler = this._formClickHandler.bind(this);
   }
 
   _getEventOfferSelector() {
@@ -116,15 +118,23 @@ export default class EventFormEdit {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _formClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setFormClicktHandler(callback) {
+    this._callback.formClick = callback;
+    this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
   }
 }

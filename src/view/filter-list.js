@@ -1,9 +1,10 @@
-import {getRandomNumber, createElement} from '../mock/util.js';
+import {getRandomNumber} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class Filter {
+export default class Filter extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   _getFilterItemTemplate({name, count}) {
@@ -23,17 +24,5 @@ export default class Filter {
         <button class="visually-hidden" type="submit">Accept filter</button>
       </form>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

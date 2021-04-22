@@ -1,9 +1,9 @@
-import {createElement} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class TripCost {
+export default class TripCost extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   _getTotalPriceOfAllEvents(offers) {
@@ -25,17 +25,5 @@ export default class TripCost {
         Total:&nbsp;&euro;&nbsp;<span class="trip-info__cost-value">${tripTotalPrice}</span>
       </p>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

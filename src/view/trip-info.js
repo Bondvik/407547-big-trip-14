@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import {createElement} from '../mock/util.js';
+import AbstractView from './abstract.js';
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   _getSortTripByDate() {
@@ -32,17 +32,5 @@ export default class TripInfo {
         </div>
       </section>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
