@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-export default class TripCost extends AbstractView{
+export default class TripCost extends AbstractView {
   constructor(events) {
     super();
     this._events = events;
