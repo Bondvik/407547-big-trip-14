@@ -1,7 +1,7 @@
 import {getRandomNumber} from '../mock/util.js';
 import AbstractView from './abstract.js';
 
-export default class Filter extends AbstractView{
+export default class Filter extends AbstractView {
   constructor(filters) {
     super();
     this._filters = filters;

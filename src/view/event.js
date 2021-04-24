@@ -3,7 +3,7 @@ import {getEventDuration} from '../mock/event.js';
 import {getRandomNumber} from '../mock/util.js';
 import AbstractView from './abstract.js';
 
-export default class Event extends AbstractView{
+export default class Event extends AbstractView {
   constructor(event) {
     super();
     this._event = event;

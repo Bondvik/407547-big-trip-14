@@ -1,13 +1,14 @@
-import {render, PositionOfRender, replace} from '../mock/render.js';
-import EventView from '../view/event.js';
-import EventFormEditView from '../view/event-form-edit.js';
+import {render, PositionOfRender} from '../mock/render.js';
+import PointPresenter from '../presenter/point.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
+import SortView from '../view/sort-list.js';
 
 export default class Trip {
   constructor(tripEventsElement) {
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
+    this._sortComponent = new SortView();
     this._tripEventsContainer = tripEventsElement;
     this._tripEventsListContainer = null;
   }
@@ -19,39 +20,18 @@ export default class Trip {
     this._renderEvents();
   }
 
+  _renderSort() {
+    render(this._tripEventsContainer, this._sortComponent, PositionOfRender.AFTERBEGIN);
+  }
+
   _renderEventsList() {
-    return render(this._tripEventsContainer, this._eventsListComponent, PositionOfRender.BEFOREEND);
+    this._renderSort();
+    render(this._tripEventsContainer, this._eventsListComponent, PositionOfRender.BEFOREEND);
   }
 
   _renderEvent(event) {
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EventFormEditView(event);
-    const replaceCardToForm = () => {
-      replace(eventEditComponent, eventComponent);
-    };
-    const replaceFormToCard = () => {
-      replace(eventComponent, eventEditComponent);
-    };
-    const onEscKeyDown = (evt) => {
-      if (['Escape', 'Esc'].includes(evt.key)) {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-    eventComponent.setEditClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-    eventEditComponent.setFormClicktHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-    return eventComponent.getElement();
+    const pointPresenter = new PointPresenter();
+    return pointPresenter.init(event);
   }
 
   _renderEvents() {

@@ -4,7 +4,6 @@ import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
 import FilterView from './view/filter-list.js';
-import SortView from './view/sort-list.js';
 //TODO: расскоментировать, когда добавлять новые точки маршрута
 //import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
@@ -37,8 +36,6 @@ render(tripControlsFiltersElement, filterListComponent, PositionOfRender.BEFOREE
 //Сортировка
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
-const sortComponent = new SortView();
-render(tripEventsElement, sortComponent, PositionOfRender.AFTERBEGIN);
 
 //Точки маршрута и формы добавления/редактирования маршрута
 const tripPresenter = new TripPresenter(tripEventsElement);
