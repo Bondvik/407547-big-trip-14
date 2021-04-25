@@ -15,13 +15,11 @@ const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
+const updateItem = (items, updatedPoint) => {
+  const index = items.findIndex((item) => item.id === updatedPoint.id);
+  if (index >= 0) {
+    items.splice(index, 1, updatedPoint);
   }
-  items.splice(index, 1, update);
   return items;
 };
 
