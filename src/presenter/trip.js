@@ -45,7 +45,6 @@ export default class Trip {
         this._events.sort(compareEventPrice);
         break;
       case SortType.TIME:
-        console.log(this._events.sort(sortEventDown))
         this._events.sort(sortEventDown);
         break;
 

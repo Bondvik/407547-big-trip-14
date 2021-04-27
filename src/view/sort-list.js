@@ -5,6 +5,7 @@ export default class Sort extends AbstractView {
   constructor() {
     super();
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._checkedSortType = SortType.DEFAULT;
   }
   getTemplate() {
     return (
@@ -22,7 +23,7 @@ export default class Sort extends AbstractView {
             <label class="trip-sort__btn" for="sort-time">Time</label>
           </div>
           <div class="trip-sort__item  trip-sort__item--price">
-            <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" data-sort-type="${SortType.PRICE}" checked>
+            <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" data-sort-type="${SortType.PRICE}">
             <label class="trip-sort__btn" for="sort-price">Price</label>
           </div>
           <div class="trip-sort__item  trip-sort__item--offer">
@@ -32,13 +33,27 @@ export default class Sort extends AbstractView {
       </form>`
     );
   }
+  //Для визуального оформления checked кнопок сортировки
+  _getCheckSortType(evt) {
+    if(evt.target.previousElementSibling) {
+      const tripsSort = document.querySelectorAll('.trip-sort__input');
+      for (const trip of tripsSort) {
+        trip.checked = false;
+        if(trip.dataset.sortType === this._checkedSortType && !trip.disabled) {
+          trip.checked = true;
+        }
+      }
+    }
+  }
 
   _sortTypeChangeHandler(evt) {
     if (evt.target.previousElementSibling.tagName !== 'INPUT') {
       return;
     }
+    this._checkedSortType = evt.target.previousElementSibling.dataset.sortType;
+    this._getCheckSortType(evt);
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.previousElementSibling.dataset.sortType);
+    this._callback.sortTypeChange(this._checkedSortType);
   }
 
   setSortTypeChangeHandler(callback) {

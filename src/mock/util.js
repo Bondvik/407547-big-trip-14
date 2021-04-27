@@ -33,32 +33,8 @@ const updateItem = (items, updatedPoint) => {
 
 const compareEventPrice = (prevEvent, nextEvent) => nextEvent.eventTotal - prevEvent.eventTotal;
 
-// Функция помещает задачи без даты в конце списка,
-// возвращая нужный вес для колбэка sort
-const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
-    return 0;
-  }
-
-  if (dateA === null) {
-    return 1;
-  }
-
-  if (dateB === null) {
-    return -1;
-  }
-
-  return null;
-};
-
 const sortEventDown = (prevEvent, nextEvent) => {
-  const weight = getWeightForNullDate(prevEvent.eventDuration, nextEvent.eventDuration);
-
-  if (weight !== null) {
-    return weight;
-  }
-  console.log(dayjs(nextEvent.eventDuration).diff(dayjs(prevEvent.eventDuration)))
-  return dayjs(nextEvent.eventDuration).diff(dayjs(prevEvent.eventDuration));
+  return (nextEvent.eventEndTime - nextEvent.eventStartTime) - (prevEvent.eventEndTime - prevEvent.eventStartTime);
 };
 
 export {getRandomNumber, updateItem, SortType, sortEventDown, compareEventPrice};
