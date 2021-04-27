@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-export default class EventFormAdd extends AbstractView{
+export default class EventFormAdd extends AbstractView {
   getTemplate() {
     return (
       `<li class="trip-events__item">

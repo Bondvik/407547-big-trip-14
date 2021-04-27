@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-export default class PageNavigation extends AbstractView{
+export default class PageNavigation extends AbstractView {
   getTemplate() {
     return (
       `<nav class="trip-controls__trip-tabs  trip-tabs">

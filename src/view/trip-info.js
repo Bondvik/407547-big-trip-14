@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
 
-export default class TripInfo extends AbstractView{
+export default class TripInfo extends AbstractView {
   constructor(events) {
     super();
     this._events = events;

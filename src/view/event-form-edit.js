@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {eventProposition, eventTypes} from '../mock/event.js';
 import AbstractView from './abstract.js';
 
-export default class EventFormEdit extends AbstractView{
+export default class EventFormEdit extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
@@ -120,7 +120,7 @@ export default class EventFormEdit extends AbstractView{
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._event);
   }
 
   _formClickHandler(evt) {
