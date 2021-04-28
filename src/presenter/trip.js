@@ -51,7 +51,7 @@ export default class Trip {
       default:
         // 3. А когда пользователь захочет "вернуть всё, как было",
         // мы просто запишем в _events исходный массив
-        this._events =  this._sourcedEvents;
+        this._events =  this._sourcedEvents.slice();
     }
     this._currentSortType = sortType;
   }
