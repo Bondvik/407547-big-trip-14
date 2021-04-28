@@ -15,4 +15,12 @@ const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
 };
 
-export {getRandomNumber};
+const updateItem = (items, updatedPoint) => {
+  const index = items.findIndex((item) => item.id === updatedPoint.id);
+  if (index >= 0) {
+    items.splice(index, 1, updatedPoint);
+  }
+  return items;
+};
+
+export {getRandomNumber, updateItem};

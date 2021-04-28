@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomNumber} from './util.js';
 // eslint-disable-next-line no-undef
 const duration = require('dayjs/plugin/duration');
@@ -171,6 +172,7 @@ const createEvent = () => {
   const eventStartTime = createEventStartTime();
   const eventEndTime = createEventEndTime(eventStartTime);
   return {
+    id: nanoid(),
     eventType: eventTypes[getRandomNumber(0, eventTypes.length - 1)],
     eventCity: cities[getRandomNumber(0, cities.length - 1)],
     eventOffers: createEventOffers(),
@@ -180,6 +182,7 @@ const createEvent = () => {
     eventEndTime,
     eventDuration: getEventDuration(eventStartTime, eventEndTime),
     eventTotal: getRandomNumber(1, 10000),
+    isFavorite: getRandomNumber(0, 1),
   };
 };
 
