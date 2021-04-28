@@ -24,7 +24,7 @@ export default class Trip {
     // 1. В отличии от сортировки по любому параметру,
     // исходный порядок можно сохранить только одним способом -
     // сохранив исходный массив:
-    this._sourcedEvents = events.slice();
+    this._sourcedEvents = [...events];
     this._renderEventsList();
     this._tripEventsListContainer = document.querySelector('.trip-events__list');
     this._renderEvents();
@@ -51,7 +51,7 @@ export default class Trip {
       default:
         // 3. А когда пользователь захочет "вернуть всё, как было",
         // мы просто запишем в _events исходный массив
-        this._events =  this._sourcedEvents.slice();
+        this._events =  [...this._sourcedEvents];
     }
     this._currentSortType = sortType;
   }

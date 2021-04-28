@@ -34,7 +34,7 @@ export default class Sort extends AbstractView {
     );
   }
   //Для визуального оформления checked кнопок сортировки
-  _getCheckSortType(evt) {
+  _getCheckSortType (evt) {
     if(evt.target.previousElementSibling) {
       const tripsSort = document.querySelectorAll('.trip-sort__input');
       for (const trip of tripsSort) {
@@ -47,7 +47,7 @@ export default class Sort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (evt.target.previousElementSibling.tagName !== 'INPUT') {
+    if (!evt.target.classList.contains('trip-sort__btn')) {
       return;
     }
     this._checkedSortType = evt.target.previousElementSibling.dataset.sortType;

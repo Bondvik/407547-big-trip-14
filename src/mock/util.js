@@ -31,8 +31,6 @@ const updateItem = (items, updatedPoint) => {
 
 const compareEventPrice = (prevEvent, nextEvent) => nextEvent.eventTotal - prevEvent.eventTotal;
 
-const sortEventDown = (prevEvent, nextEvent) => {
-  return (nextEvent.eventEndTime - nextEvent.eventStartTime) - (prevEvent.eventEndTime - prevEvent.eventStartTime);
-};
+const sortEventDown = (prevEvent, nextEvent) => (nextEvent.eventEndTime - nextEvent.eventStartTime) - (prevEvent.eventEndTime - prevEvent.eventStartTime);
 
 export {getRandomNumber, updateItem, SortType, sortEventDown, compareEventPrice};
