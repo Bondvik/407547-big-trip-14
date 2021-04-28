@@ -1,3 +1,9 @@
+const SortType = {
+  DEFAULT: 'default',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
 //Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 const getRandomNumber = function(min, max) {
   let minValue =  Math.ceil(min);
@@ -23,4 +29,10 @@ const updateItem = (items, updatedPoint) => {
   return items;
 };
 
-export {getRandomNumber, updateItem};
+const compareEventPrice = (prevEvent, nextEvent) => nextEvent.eventTotal - prevEvent.eventTotal;
+
+const sortEventDown = (prevEvent, nextEvent) => {
+  return (nextEvent.eventEndTime - nextEvent.eventStartTime) - (prevEvent.eventEndTime - prevEvent.eventStartTime);
+};
+
+export {getRandomNumber, updateItem, SortType, sortEventDown, compareEventPrice};
