@@ -152,8 +152,8 @@ export default class EventFormEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setFormClicktHandler(this._callback.formClickHandler);
-    this.setFormSubmitHandler(this._callback.formSubmitHandler);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormClicktHandler(this._callback.formClick);
   }
 
   _setInnerHandlers() {

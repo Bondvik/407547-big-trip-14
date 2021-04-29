@@ -15,7 +15,7 @@ export default class Point {
     this._eventEditComponent = null;
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handlePositionOfRender = this._handleFormSubmit.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._changeMode = changeMode;
     this._mode = Mode.DEFAULT;
