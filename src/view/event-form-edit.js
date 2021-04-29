@@ -125,7 +125,7 @@ export default class EventFormEdit extends AbstractView {
 
   _formClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formClick();
+    this._callback.formClick(this._event);
   }
 
   setFormSubmitHandler(callback) {
