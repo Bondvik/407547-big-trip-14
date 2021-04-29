@@ -35,11 +35,11 @@ export default class Sort extends AbstractView {
   }
   //Для визуального оформления checked кнопок сортировки
   _getCheckSortType (evt) {
-    if(evt.target.previousElementSibling) {
+    if (evt.target.previousElementSibling) {
       const tripsSort = document.querySelectorAll('.trip-sort__input');
       for (const trip of tripsSort) {
         trip.checked = false;
-        if(trip.dataset.sortType === this._checkedSortType && !trip.disabled) {
+        if (trip.dataset.sortType === this._checkedSortType && !trip.disabled) {
           trip.checked = true;
         }
       }
