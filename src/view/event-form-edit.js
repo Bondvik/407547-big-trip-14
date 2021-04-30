@@ -1,16 +1,26 @@
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
 import SmartView from './smart.js';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 export default class EventFormEdit extends SmartView {
   constructor(event) {
     super();
     this._data = EventFormEdit.parseEventToData(event);
+    this._startDatePicker = null;
+    this._endDatePicker = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
+    this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
+    this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
+
     this._setInnerHandlers();
+    this._setStartPicker();
+    this._setEndPicker();
   }
 
   _getEventOfferSelector() {
@@ -152,6 +162,8 @@ export default class EventFormEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setStartPicker();
+    this._setEndPicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClicktHandler(this._callback.formClick);
   }
@@ -196,6 +208,54 @@ export default class EventFormEdit extends SmartView {
     this.updateData({
       eventType: type,
       eventOffers: createEventOffers(),
+    });
+  }
+
+  _setStartPicker() {
+    if (this._startDatePicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+    }
+    this._startDatePicker = flatpickr(
+      this.getElement().querySelector('input[id="event-start-time-1"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        time_24hr: true,
+        defaultDate: this._data.eventStartTime,
+        onChange: this._startTimeChangeHandler,
+      });
+  }
+
+  _setEndPicker() {
+    if (this._endDatePicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
+    this._endDatePicker = flatpickr(
+      this.getElement().querySelector('input[id ="event-end-time-1"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        time_24hr: true,
+        defaultDate: this._data.eventEndTime,
+        onChange: this._endTimeChangeHandler,
+      });
+  }
+
+  _startTimeChangeHandler([userDate]) {
+    this.updateData({
+      eventStartTime: userDate,
+    });
+  }
+
+  _endTimeChangeHandler([userDate]) {
+    this.updateData({
+      eventEndTime: userDate,
     });
   }
 
