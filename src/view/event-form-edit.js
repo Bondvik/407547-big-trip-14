@@ -250,13 +250,13 @@ export default class EventFormEdit extends SmartView {
   _startTimeChangeHandler([userDate]) {
     this.updateData({
       eventStartTime: userDate,
-    });
+    }, true);
   }
 
   _endTimeChangeHandler([userDate]) {
     this.updateData({
       eventEndTime: userDate,
-    });
+    }, true);
   }
 
   reset(event) {
