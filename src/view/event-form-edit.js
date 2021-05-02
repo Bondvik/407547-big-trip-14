@@ -13,9 +13,38 @@ export default class EventFormEdit extends SmartView {
     this._setInnerHandlers();
   }
 
-  _getEventOfferSelector() {
+  get _eventOfferSelector() {
     const offers = this._data.eventOffers.map((item) => item);
     return offers.reduce((accumulator, item) => accumulator + this._getEventOfferView(item), '');
+  }
+
+  get _photos() {
+    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`, '');
+    if (!eventListPhotos.length) {
+      return '';
+    }
+    return (
+      `<div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${eventListPhotos}
+        </div>
+      </div>`
+    );
+  }
+
+  get _types() {
+    const eventsType = eventTypes.reduce((accumulator, item) =>
+      `${accumulator}
+      <div class="event__type-item">
+        <input id="event-type-${item.type}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}">
+        <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-${this._data.id}" data-type=${item.type}>${item.name}</label>
+      </div>`, '');
+    return eventsType;
+  }
+
+  get _cities() {
+    const selectedCities = cities.reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
+    return selectedCities;
   }
 
   _getEventOfferView(item) {
@@ -29,34 +58,6 @@ export default class EventFormEdit extends SmartView {
         </label>
       </div>`
     );
-  }
-
-  _getPhotos() {
-    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => accumulator + `<img class="event__photo" src="${item}" alt="Event photo">`, '');
-    if (!eventListPhotos.length) {
-      return '';
-    }
-    return (
-      `<div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${eventListPhotos}
-        </div>
-      </div>`
-    );
-  }
-
-  _getTypes() {
-    const eventsType = eventTypes.reduce((accumulator, item) => accumulator +
-    `<div class="event__type-item">
-      <input id="event-type-${item.type}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}">
-      <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-${this._data.id}" data-type=${item.type}>${item.name}</label>
-    </div>`, '');
-    return eventsType;
-  }
-
-  _getCities() {
-    const selectedCities = cities.reduce((accumulator, item) => accumulator + `<option value=${item}></option>`, '');
-    return selectedCities;
   }
 
   getTemplate() {
@@ -74,7 +75,7 @@ export default class EventFormEdit extends SmartView {
               <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Event type</legend>
-                  ${this._getTypes()}
+                  ${this._types}
                 </fieldset>
               </div>
             </div>
@@ -85,7 +86,7 @@ export default class EventFormEdit extends SmartView {
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._data.eventCity}" list="destination-list-1">
               <datalist id="destination-list-1">
-                ${this._getCities()}
+                ${this._cities}
               </datalist>
             </div>
 
@@ -115,19 +116,23 @@ export default class EventFormEdit extends SmartView {
             <section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
-                ${this._getEventOfferSelector()}
+                ${this._eventOfferSelector}
               </div>
             </section>
 
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">${this._data.eventDestination}</p>
-              ${this._getPhotos()}
+              ${this._photos}
             </section>
           </section>
         </form>
       </li>`
     );
+  }
+
+  reset(event) {
+    this.updateData(EventFormEdit.parseEventToData(event));
   }
 
   _formSubmitHandler(evt) {
@@ -172,6 +177,16 @@ export default class EventFormEdit extends SmartView {
     });
   }
 
+  _typeClickHandler(evt) {
+    const eventType = evt.target.dataset.type;
+    const type = eventTypes.find(({type}) => type === eventType);
+    evt.preventDefault();
+    this.updateData({
+      eventType: type,
+      eventOffers: createEventOffers(),
+    });
+  }
+
   //превращение данных - в состояние
   //на основе данных об event создаём новый объект
   static parseEventToData(event) {
@@ -187,19 +202,5 @@ export default class EventFormEdit extends SmartView {
       data,
     );
     return data;
-  }
-
-  _typeClickHandler(evt) {
-    const eventType = evt.target.dataset.type;
-    const type = eventTypes.find((item) => item.type === eventType);
-    evt.preventDefault();
-    this.updateData({
-      eventType: type,
-      eventOffers: createEventOffers(),
-    });
-  }
-
-  reset(event) {
-    this.updateData(EventFormEdit.parseEventToData(event));
   }
 }
