@@ -7,7 +7,7 @@ export default class TripInfo extends AbstractView {
     this._events = events;
   }
 
-  _getSortTripByDate() {
+  get _sortTripByDate() {
     //Сортирую получные данные по дате
     return this._events.sort((prev, next) => prev.eventStartTime.getTime() - next.eventStartTime.getTime());
   }
@@ -21,7 +21,7 @@ export default class TripInfo extends AbstractView {
   }
 
   getTemplate() {
-    const sortTripByDate = this._getSortTripByDate();
+    const sortTripByDate = this._sortTripByDate;
     const startDate = `${dayjs(sortTripByDate[0].eventStartTime).format('MMM DD')}`;
     const endDate = `${dayjs(sortTripByDate[sortTripByDate.length - 1].eventStartTime).format('MMM DD')}`;
     return (
