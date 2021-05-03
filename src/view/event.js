@@ -10,6 +10,10 @@ export default class Event extends AbstractView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
+  get _eventSelectedOffers() {
+    return this._event.eventOffers.reduce((accumulator, item) => accumulator + this._getEventOffer(item), '');
+  }
+
   _getEventOffer(item) {
     return (
       `<li class="event__offer">
@@ -18,10 +22,6 @@ export default class Event extends AbstractView {
         <span class="event__offer-price">${item.evantOfferPrice}</span>
       </li>`
     );
-  }
-
-  _getEventSelectedOffers() {
-    return this._event.eventOffers.reduce((accumulator, item) => accumulator + this._getEventOffer(item), '');
   }
 
   getTemplate() {
@@ -46,7 +46,7 @@ export default class Event extends AbstractView {
           </p>
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
-            ${this._getEventSelectedOffers()}
+            ${this._eventSelectedOffers}
           </ul>
           <button class="event__favorite-btn ${(this._event.isFavorite) ? 'event__favorite-btn--active' : ''}" type="button">
             <span class="visually-hidden">Add to favorite</span>

@@ -15,7 +15,7 @@ const cities = [
   'Prague',
   'Paris',
   'Berlin',
-  'St. Petersburg',
+  'St.Petersburg',
   'Barcelona',
   'Rome',
   'Budapest',
@@ -145,8 +145,9 @@ const createEventOffers = () => {
   const offers = [];
   const index = getRandomNumber(0, eventProposition.length - 1);
   for (let i = index; i > 0; i--) {
-    const {name, price} = eventProposition[i];
+    const {name, price, type} = eventProposition[i];
     offers.push({
+      eventOfferType: type,
       eventOfferName: name,
       evantOfferPrice: price,
     });
@@ -186,4 +187,4 @@ const createEvent = () => {
   };
 };
 
-export {createEvent, eventProposition, eventTypes, getEventDuration};
+export {createEvent, eventProposition, eventTypes, getEventDuration, cities, getEventDestination, getEventPhotos, createEventOffers};
