@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
 import SmartView from './smart.js';
-import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/flatpickr.min.css';
 
 export default class EventFormEdit extends SmartView {
   constructor(event) {
@@ -10,6 +10,11 @@ export default class EventFormEdit extends SmartView {
     this._data = EventFormEdit.parseEventToData(event);
     this._startDatePicker = null;
     this._endDatePicker = null;
+    this._datePickerConfig = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      time_24hr: true,
+    };
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
@@ -19,8 +24,8 @@ export default class EventFormEdit extends SmartView {
     this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setStartPicker();
-    this._setEndPicker();
+    this._setStartTime();
+    this._setEndTime();
   }
 
   get _eventOfferSelector() {
@@ -29,11 +34,14 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _photos() {
-    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) =>
-      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`, '');
+    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
+      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
+    ), '');
+
     if (!eventListPhotos.length) {
       return '';
     }
+
     return (
       `<div class="event__photos-container">
         <div class="event__photos-tape">
@@ -152,7 +160,7 @@ export default class EventFormEdit extends SmartView {
     this.updateData(EventFormEdit.parseEventToData(event));
   }
 
-  _setStartPicker() {
+  _setStartTime() {
     if (this._startDatePicker) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
@@ -160,14 +168,14 @@ export default class EventFormEdit extends SmartView {
       this._startDatePicker = null;
     }
     this._startDatePicker = flatpickr(
-      this.getElement().querySelector('input[id="event-start-time-1"]'),
-      this._createFormatForDatePicker({
+      this.getElement().querySelector('#event-start-time-1'),
+      Object.assign(this._datePickerConfig, {
         defaultDate: this._data.eventStartTime,
         onChange: this._startTimeChangeHandler,
       }));
   }
 
-  _setEndPicker() {
+  _setEndTime() {
     if (this._endDatePicker) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
@@ -175,8 +183,8 @@ export default class EventFormEdit extends SmartView {
       this._endDatePicker = null;
     }
     this._endDatePicker = flatpickr(
-      this.getElement().querySelector('input[id ="event-end-time-1"]'),
-      this._createFormatForDatePicker({
+      this.getElement().querySelector('#event-end-time-1'),
+      Object.assign(this._datePickerConfig, {
         defaultDate: this._data.eventEndTime,
         onChange: this._endTimeChangeHandler,
       }));
@@ -194,8 +202,8 @@ export default class EventFormEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setStartPicker();
-    this._setEndPicker();
+    this._setStartTime();
+    this._setEndTime();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClicktHandler(this._callback.formClick);
   }
