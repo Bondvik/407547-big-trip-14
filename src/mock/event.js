@@ -187,4 +187,13 @@ const createEvent = () => {
   };
 };
 
-export {createEvent, eventProposition, eventTypes, getEventDuration, cities, getEventDestination, getEventPhotos, createEventOffers};
+export {
+  createEvent,
+  eventProposition,
+  eventTypes,
+  getEventDuration,
+  cities,
+  getEventDestination,
+  getEventPhotos,
+  createEventOffers
+};

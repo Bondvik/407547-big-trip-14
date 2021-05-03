@@ -29,7 +29,8 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _photos() {
-    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`, '');
+    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) =>
+      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`, '');
     if (!eventListPhotos.length) {
       return '';
     }
@@ -43,18 +44,16 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _types() {
-    const eventsType = eventTypes.reduce((accumulator, item) =>
+    return eventTypes.reduce((accumulator, item) =>
       `${accumulator}
       <div class="event__type-item">
         <input id="event-type-${item.type}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}">
         <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-${this._data.id}" data-type=${item.type}>${item.name}</label>
       </div>`, '');
-    return eventsType;
   }
 
   get _cities() {
-    const selectedCities = cities.reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
-    return selectedCities;
+    return cities.reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
   _getEventOfferView(item) {
