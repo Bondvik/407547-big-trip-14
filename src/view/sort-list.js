@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {SortType} from '../mock/util.js';
+import {SortType} from '../const.js';
 
 export default class Sort extends AbstractView {
   constructor() {

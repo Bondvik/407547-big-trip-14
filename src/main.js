@@ -1,5 +1,6 @@
 import {render, PositionOfRender} from './mock/render.js';
 import TripPresenter from './presenter/trip.js';
+import EventsModel from './model/events.js';
 import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
@@ -12,6 +13,9 @@ import {createFilter} from './mock/filter.js';
 const EVENT_COUNT = 15;
 const events = new Array(EVENT_COUNT).fill().map(createEvent);
 const filters = createFilter(events);
+
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
 
 //Инфо о маршруте
 const tripMainElement = document.querySelector('.trip-main');
@@ -38,5 +42,5 @@ const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
 //Точки маршрута и формы добавления/редактирования маршрута
-const tripPresenter = new TripPresenter(tripEventsElement);
-tripPresenter.init(events);
+const tripPresenter = new TripPresenter(tripEventsElement, eventsModel);
+tripPresenter.init();

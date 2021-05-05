@@ -8,6 +8,7 @@ export default class EventFormEdit extends SmartView {
   constructor(event) {
     super();
     this._data = EventFormEdit.parseEventToData(event);
+    this._datepicker = null;
     this._startDatePicker = null;
     this._endDatePicker = null;
     this._datePickerConfig = {
@@ -15,6 +16,7 @@ export default class EventFormEdit extends SmartView {
       enableTime: true,
       time_24hr: true,
     };
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
@@ -156,8 +158,20 @@ export default class EventFormEdit extends SmartView {
     );
   }
 
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   reset(event) {
     this.updateData(EventFormEdit.parseEventToData(event));
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setStartTime() {
@@ -198,6 +212,11 @@ export default class EventFormEdit extends SmartView {
   setFormClicktHandler(callback) {
     this._callback.formClick = callback;
     this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   restoreHandlers() {
@@ -254,6 +273,11 @@ export default class EventFormEdit extends SmartView {
     this.updateData({
       eventEndTime: userDate,
     }, true);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventFormEdit.parseDataToEvent(this._data));
   }
 
   //превращение данных - в состояние

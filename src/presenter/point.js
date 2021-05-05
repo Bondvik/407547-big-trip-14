@@ -1,6 +1,7 @@
 import {replace, render, PositionOfRender, remove} from '../mock/render.js';
 import EventView from '../view/event.js';
 import EventFormEditView from '../view/event-form-edit.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -11,12 +12,16 @@ export default class Point {
   constructor(tripEventsListElement, changeData, changeMode) {
     this._tripEventsListContainer = tripEventsListElement;
     this._changeData = changeData;
+
     this._eventComponent = null;
     this._eventEditComponent = null;
+
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+
     this._changeMode = changeMode;
     this._mode = Mode.DEFAULT;
   }
@@ -34,6 +39,7 @@ export default class Point {
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setFormClicktHandler(this._handleFormSubmit);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if ([prevEventComponent, prevEventEditComponent].includes(null)) {
       render(this._tripEventsListContainer, this._eventComponent, PositionOfRender.BEFOREEND);
@@ -52,8 +58,21 @@ export default class Point {
     remove(prevEventEditComponent);
   }
 
+  resetView() {
+    if(this._mode !== Mode.DEFAULT) {
+      this._replaceFormToCard();
+    }
+  }
+
+  destroy() {
+    remove(this._eventComponent);
+    remove(this._eventEditComponent);
+  }
+
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._event,
@@ -62,11 +81,6 @@ export default class Point {
         },
       ),
     );
-  }
-
-  destroy() {
-    remove(this._eventComponent);
-    remove(this._eventEditComponent);
   }
 
   _replaceCardToForm() {
@@ -95,13 +109,21 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      point,
+    );
     this._replaceFormToCard();
   }
 
-  resetView() {
-    if(this._mode !== Mode.DEFAULT) {
-      this._replaceFormToCard();
-    }
+  _handleDeleteClick(event) {
+    this._changeData(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
   }
+
+
 }
