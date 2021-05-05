@@ -1,15 +1,17 @@
-import {render, PositionOfRender} from '../mock/render.js';
+import {render, PositionOfRender, remove} from '../utils/render.js';
 import {sortEventDown, compareEventPrice} from '../mock/util.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 import PointPresenter from '../presenter/point.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
 import SortView from '../view/sort-list.js';
+import {filter} from '../utils/filter.js';
 
 export default class Trip {
-  constructor(tripEventsElement, eventsModel) {
+  constructor(tripEventsElement, eventsModel, filterModel) {
     this._tripEventsContainer = tripEventsElement;
     this._eventsModel = eventsModel;
+    this._filterModel = filterModel;
 
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
@@ -26,6 +28,7 @@ export default class Trip {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -35,13 +38,16 @@ export default class Trip {
   }
 
   _getEvents() {
+    const filterType = this._filterModel.getFilter();
+    const events = this._eventsModel.getEvents();
+    const filtredEvents = filter[filterType](events);
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._eventsModel.getEvents().slice().sort(sortEventDown);
+        return filtredEvents.sort(sortEventDown);
       case SortType.PRICE:
-        return this._eventsModel.getEvents().slice().sort(compareEventPrice);
+        return filtredEvents.sort(compareEventPrice);
     }
-    return this._eventsModel.getEvents();
+    return filtredEvents;
   }
 
   _handleViewAction(actionType, updateType, updatePoint) {
@@ -134,6 +140,7 @@ export default class Trip {
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
+    remove(this._listEmptyComponent);
   }
 
   _handleModeChange() {

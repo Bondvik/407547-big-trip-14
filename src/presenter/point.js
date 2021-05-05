@@ -1,4 +1,4 @@
-import {replace, render, PositionOfRender, remove} from '../mock/render.js';
+import {replace, render, PositionOfRender, remove} from '../utils/render.js';
 import EventView from '../view/event.js';
 import EventFormEditView from '../view/event-form-edit.js';
 import {UserAction, UpdateType} from '../const.js';
