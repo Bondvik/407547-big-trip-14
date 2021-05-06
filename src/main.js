@@ -46,3 +46,8 @@ const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterMo
 
 filterPresenter.init();
 tripPresenter.init();
+
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

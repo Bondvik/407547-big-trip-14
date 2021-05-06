@@ -1,12 +1,14 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
+import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
 export default class EventFormEdit extends SmartView {
-  constructor(event) {
+  constructor(event = DEFAULT_EVENT, mode = Mode.EDITING) {
     super();
+    this._mode = mode;
     this._data = EventFormEdit.parseEventToData(event);
     this._datepicker = null;
     this._startDatePicker = null;
@@ -36,13 +38,14 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _photos() {
-    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
-      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
-    ), '');
+    const eventListPhotos = '';
+    // const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
+    //   `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
+    // ), '');
 
-    if (!eventListPhotos.length) {
-      return '';
-    }
+    // if (!eventListPhotos.length) {
+    //   return '';
+    // }
 
     return (
       `<div class="event__photos-container">

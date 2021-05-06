@@ -1,3 +1,12 @@
+import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+  ADD: 'ADD',
+};
+
 const SortType = {
   DEFAULT: 'day',
   TIME: 'time',
@@ -24,4 +33,29 @@ const FilterType = {
   PAST: 'past',
 };
 
-export {SortType, UserAction, UpdateType, FilterType};
+const DEFAULT_EVENT = {
+  id: nanoid(),
+  eventType: {
+    type:'bus',
+    name: 'Bus',
+    icon: 'bus.png',
+  },
+  eventCity: '',
+  eventOffers: [],
+  eventDestination: '',
+  eventPhotos: '',
+  eventStartTime: dayjs(),
+  eventEndTime: dayjs(),
+  eventDuration: '',
+  eventTotal: 0,
+  isFavorite: 0,
+};
+
+export {
+  Mode,
+  SortType,
+  UserAction,
+  UpdateType,
+  FilterType,
+  DEFAULT_EVENT
+};

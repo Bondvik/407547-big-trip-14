@@ -1,12 +1,7 @@
 import {replace, render, PositionOfRender, remove} from '../utils/render.js';
 import EventView from '../view/event.js';
 import EventFormEditView from '../view/event-form-edit.js';
-import {UserAction, UpdateType} from '../const.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
+import {Mode, UserAction, UpdateType} from '../const.js';
 
 export default class Point {
   constructor(tripEventsListElement, changeData, changeMode) {
@@ -124,6 +119,4 @@ export default class Point {
       event,
     );
   }
-
-
 }
