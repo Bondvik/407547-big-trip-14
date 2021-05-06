@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
+import he from 'he';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
@@ -23,6 +24,7 @@ export default class EventFormEdit extends SmartView {
     this._formClickHandler = this._formClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
     this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
@@ -93,7 +95,7 @@ export default class EventFormEdit extends SmartView {
     return mode === Mode.EDITING ? `<button class="event__rollup-btn" type="button">
                                   <span class="visually-hidden">Open event</span>
                                  </button>`: '';
-  };
+  }
 
   getTemplate() {
     return (
@@ -119,7 +121,7 @@ export default class EventFormEdit extends SmartView {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${this._data.eventType.name}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._data.eventCity}" list="destination-list-1">
+              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(this._data.eventCity)}" list="destination-list-1">
               <datalist id="destination-list-1">
                 ${this._cities}
               </datalist>
@@ -138,7 +140,7 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${this._data.eventTotal}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(this._data.eventTotal)}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -233,6 +235,7 @@ export default class EventFormEdit extends SmartView {
     this._setEndTime();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClicktHandler(this._callback.formClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _formSubmitHandler(evt) {
@@ -247,9 +250,18 @@ export default class EventFormEdit extends SmartView {
 
   _setInnerHandlers() {
     const selectTypes = this.getElement().querySelectorAll('.event__type-label');
+    const changePrice = this.getElement().querySelector('.event__input--price');
     const changeDestination = this.getElement().querySelector('.event__input--destination');
+    changePrice.addEventListener('change', this._priceChangeHandler);
     changeDestination.addEventListener('change', this._destinationChangeHandler);
     selectTypes.forEach((item) => item.addEventListener('click', this._typeClickHandler));
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      eventTotal: evt.target.value,
+    });
   }
 
   _destinationChangeHandler(evt) {
