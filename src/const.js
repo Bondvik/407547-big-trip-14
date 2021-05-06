@@ -43,7 +43,7 @@ const DEFAULT_EVENT = {
   eventCity: '',
   eventOffers: [],
   eventDestination: '',
-  eventPhotos: '',
+  eventPhotos: [],
   eventStartTime: dayjs(),
   eventEndTime: dayjs(),
   eventDuration: '',

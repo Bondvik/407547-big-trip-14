@@ -1,7 +1,7 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
 import {nanoid} from 'nanoid';
 import EventFormEditView from '../view/event-form-edit.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, Mode, DEFAULT_EVENT} from '../const.js';
 
 export default class PointNew {
   constructor(eventsListElement, changeData) {
@@ -20,7 +20,7 @@ export default class PointNew {
       return;
     }
 
-    this._eventEditComponent = new EventFormEditView();
+    this._eventEditComponent = new EventFormEditView(DEFAULT_EVENT, Mode.ADD);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
@@ -61,4 +61,5 @@ export default class PointNew {
       this.destroy();
     }
   }
+
 }

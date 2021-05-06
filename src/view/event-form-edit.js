@@ -38,14 +38,13 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _photos() {
-    const eventListPhotos = '';
-    // const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
-    //   `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
-    // ), '');
+    const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
+      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
+    ), '');
 
-    // if (!eventListPhotos.length) {
-    //   return '';
-    // }
+    if (!eventListPhotos.length) {
+      return '';
+    }
 
     return (
       `<div class="event__photos-container">
@@ -89,6 +88,12 @@ export default class EventFormEdit extends SmartView {
       time_24hr: true,
     }, data);
   }
+
+  _createRollUpButtonTemplate(mode) {
+    return mode === Mode.EDITING ? `<button class="event__rollup-btn" type="button">
+                                  <span class="visually-hidden">Open event</span>
+                                 </button>`: '';
+  };
 
   getTemplate() {
     return (
@@ -137,20 +142,18 @@ export default class EventFormEdit extends SmartView {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
-            <button class="event__rollup-btn" type="button">
-              <span class="visually-hidden">Open event</span>
-            </button>
+            <button class="event__reset-btn" type="reset">${this._mode === Mode.EDITING ? 'Delete' : 'Cancel'}</button>
+            ${this._createRollUpButtonTemplate(this._mode)}
           </header>
           <section class="event__details">
-            <section class="event__section  event__section--offers">
+            <section class="event__section  event__section--offers ${this._eventOfferSelector ? '' : 'visually-hidden'}">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
                 ${this._eventOfferSelector}
               </div>
             </section>
 
-            <section class="event__section  event__section--destination">
+            <section class="event__section  event__section--destination ${this._data.eventDestination ? '' : 'visually-hidden'}">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">${this._data.eventDestination}</p>
               ${this._photos}
@@ -213,8 +216,10 @@ export default class EventFormEdit extends SmartView {
   }
 
   setFormClicktHandler(callback) {
-    this._callback.formClick = callback;
-    this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
+    if (this._mode === Mode.EDITING) {
+      this._callback.formClick = callback;
+      this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
+    }
   }
 
   setDeleteClickHandler(callback) {
