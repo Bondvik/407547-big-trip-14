@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
+import {nanoid} from 'nanoid';
 import he from 'he';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
@@ -240,6 +241,9 @@ export default class EventFormEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    if (this._mode === Mode.ADD) {
+      this._data.id = nanoid();
+    }
     this._callback.formSubmit(EventFormEdit.parseDataToEvent(this._data));
   }
 

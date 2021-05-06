@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -34,7 +33,7 @@ const FilterType = {
 };
 
 const DEFAULT_EVENT = {
-  id: nanoid(),
+  id: null,
   eventType: {
     type:'bus',
     name: 'Bus',
