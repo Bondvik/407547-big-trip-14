@@ -19,4 +19,6 @@ const compareEventPrice = (prevEvent, nextEvent) => nextEvent.eventTotal - prevE
 
 const sortEventDown = (prevEvent, nextEvent) => (nextEvent.eventEndTime - nextEvent.eventStartTime) - (prevEvent.eventEndTime - prevEvent.eventStartTime);
 
-export {getRandomNumber, sortEventDown, compareEventPrice};
+const sortEventDay = (prevEvent, nextEvent) => prevEvent.eventStartTime - nextEvent.eventStartTime;
+
+export {getRandomNumber, sortEventDown, compareEventPrice, sortEventDay};

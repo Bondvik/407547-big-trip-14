@@ -1,5 +1,5 @@
 const SortType = {
-  DEFAULT: 'default',
+  DEFAULT: 'day',
   TIME: 'time',
   PRICE: 'price',
 };

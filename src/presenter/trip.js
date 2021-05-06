@@ -1,5 +1,5 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
-import {sortEventDown, compareEventPrice} from '../mock/util.js';
+import {sortEventDown, compareEventPrice, sortEventDay} from '../mock/util.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 import PointPresenter from '../presenter/point.js';
 import EventsListView from '../view/events-list.js';
@@ -46,8 +46,9 @@ export default class Trip {
         return filtredEvents.sort(sortEventDown);
       case SortType.PRICE:
         return filtredEvents.sort(compareEventPrice);
+      default:
+        return filtredEvents.sort(sortEventDay);
     }
-    return filtredEvents;
   }
 
   _handleViewAction(actionType, updateType, updatePoint) {
@@ -78,7 +79,8 @@ export default class Trip {
       // - обновить весь список точек маршрутов (например, при переключении фильтра)
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
-        this._clearEventList();
+        this._clearEventList({resetSortType: true});
+        this._renderEventsList();
         this._renderEvents();
         break;
     }
@@ -121,7 +123,7 @@ export default class Trip {
 
   _renderEvents() {
     const events = this._getEvents();
-    if (events.length) {
+    if (events && events.length) {
       events.forEach((event) => {
         this._renderEvent(event);
       });
@@ -135,12 +137,18 @@ export default class Trip {
     render(this._tripEventsListContainer, this._listEmptyComponent, PositionOfRender.BEFOREEND);
   }
 
-  _clearEventList() {
+  _clearEventList({resetSortType = false} = {}) {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
     remove(this._listEmptyComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+      remove(this._sortComponent);
+    }
+
   }
 
   _handleModeChange() {
