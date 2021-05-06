@@ -140,7 +140,7 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(this._data.eventTotal)}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(String(this._data.eventTotal))}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
