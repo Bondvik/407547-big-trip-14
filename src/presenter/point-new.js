@@ -9,15 +9,22 @@ export default class PointNew {
     this._changeData = changeData;
 
     this._eventEditComponent = null;
+    this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._destroyCallback = callback;
+
     if (this._eventEditComponent !== null) {
       return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
     }
 
     this._eventEditComponent = new EventFormEditView(DEFAULT_EVENT, Mode.ADD);
