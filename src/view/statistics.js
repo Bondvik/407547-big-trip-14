@@ -1,6 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
+import {BAR_HEIGHT, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration} from '../utils/statistics.js';
 
 export default class Statistics extends SmartView {
   constructor(events) {
@@ -14,14 +15,20 @@ export default class Statistics extends SmartView {
   }
 
   _renderMoneyChart(moneyCtx, events) {
-    // Метод для отрисовки графика финансовых расходов по каждому типу точек маршрута
+    // Метод для отрисовки графика финансовых расходов по каждому типу точки маршрута
+    const eventsTypes = events.map((event) => event.eventType.type);
+    const typesUniq = [...new Set(eventsTypes)];
+    const totalPriceByTypes = typesUniq.map((item) => getPriceByTripType(events, item));
+
+    moneyCtx.height = BAR_HEIGHT * typesUniq.length;
+
     return new Chart(moneyCtx, {
       plugins: [ChartDataLabels],
       type: 'horizontalBar',
       data: {
-        labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+        labels: typesUniq,
         datasets: [{
-          data: [400, 300, 200, 160, 150, 100],
+          data: totalPriceByTypes,
           backgroundColor: '#ffffff',
           hoverBackgroundColor: '#ffffff',
           anchor: 'start',
@@ -36,7 +43,7 @@ export default class Statistics extends SmartView {
             color: '#000000',
             anchor: 'end',
             align: 'start',
-            formatter: (val) => '€ ${val}',
+            formatter: (val) => `€ ${val}`,
           },
         },
         title: {
@@ -52,6 +59,7 @@ export default class Statistics extends SmartView {
               fontColor: '#000000',
               padding: 5,
               fontSize: 13,
+              callback: (val) => `${val.toUpperCase()}`,
             },
             gridLines: {
               display: false,
@@ -83,10 +91,152 @@ export default class Statistics extends SmartView {
 
   _renderTypeChart(typeCtx, events) {
     // Метод для отрисовки графика количества того или иного типа точки маршрута
+    const eventsTypes = events.map((event) => event.eventType.type);
+    const typesUniq = [...new Set(eventsTypes)];
+    const countByEventTypes = typesUniq.map((item) => getCountByTripType(events, item));
+
+    typeCtx.height = BAR_HEIGHT * typesUniq.length;
+
+    return new Chart(typeCtx, {
+      plugins: [ChartDataLabels],
+      type: 'horizontalBar',
+      data: {
+        labels: typesUniq,
+        datasets: [{
+          data: countByEventTypes,
+          backgroundColor: '#ffffff',
+          hoverBackgroundColor: '#ffffff',
+          anchor: 'start',
+        }],
+      },
+      options: {
+        plugins: {
+          datalabels: {
+            font: {
+              size: 13,
+            },
+            color: '#000000',
+            anchor: 'end',
+            align: 'start',
+            formatter: (val) => `${val}x`,
+          },
+        },
+        title: {
+          display: true,
+          text: 'TYPE',
+          fontColor: '#000000',
+          fontSize: 23,
+          position: 'left',
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: '#000000',
+              padding: 5,
+              fontSize: 13,
+              callback: (val) => `${val.toUpperCase()}`,
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            barThickness: 44,
+          }],
+          xAxes: [{
+            ticks: {
+              display: false,
+              beginAtZero: true,
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            minBarLength: 50,
+          }],
+        },
+        legend: {
+          display: false,
+        },
+        tooltips: {
+          enabled: false,
+        },
+      },
+    });
   }
 
   _renderTimeChart(timeCtx, events) {
     // Метод для отрисовки графика затраченного времени относительно типа точки маршрута
+    const eventsTypes = events.map((event) => event.eventType.type);
+    const typesUniq = [...new Set(eventsTypes)];
+    const durationEventTypes = typesUniq.map((item) => getDurationByTripType(events, item));
+
+    timeCtx.height = BAR_HEIGHT * typesUniq.length;
+
+    return new Chart(timeCtx, {
+      plugins: [ChartDataLabels],
+      type: 'horizontalBar',
+      data: {
+        labels: typesUniq,
+        datasets: [{
+          data: durationEventTypes,
+          backgroundColor: '#ffffff',
+          hoverBackgroundColor: '#ffffff',
+          anchor: 'start',
+        }],
+      },
+      options: {
+        plugins: {
+          datalabels: {
+            font: {
+              size: 13,
+            },
+            color: '#000000',
+            anchor: 'end',
+            align: 'start',
+            formatter: (val) => `${humanizeDuration(val)}`,
+          },
+        },
+        title: {
+          display: true,
+          text: 'TIME-SPEND',
+          fontColor: '#000000',
+          fontSize: 23,
+          position: 'left',
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: '#000000',
+              padding: 5,
+              fontSize: 13,
+              callback: (val) => `${val.toUpperCase()}`,
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            barThickness: 44,
+          }],
+          xAxes: [{
+            ticks: {
+              display: false,
+              beginAtZero: true,
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            minBarLength: 50,
+          }],
+        },
+        legend: {
+          display: false,
+        },
+        tooltips: {
+          enabled: false,
+        },
+      },
+    });
   }
 
   getTemplate() {
@@ -125,9 +275,9 @@ export default class Statistics extends SmartView {
       this._timeChart = null;
     }
 
-    const moneyCtx = document.querySelector('.statistics__chart--money');
-    const typeCtx = document.querySelector('.statistics__chart--transport');
-    const timeCtx = document.querySelector('.statistics__chart--time');
+    const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
+    const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
+    const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
     this._moneyChart = this._renderMoneyChart(moneyCtx, this._events);
     this._typeChart = this._renderTypeChart(typeCtx, this._events);
