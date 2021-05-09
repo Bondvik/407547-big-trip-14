@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import {nanoid} from 'nanoid';
 import he from 'he';
-import {cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
-import {eventTypes} from '../utils/event.js';
+import {eventTypes, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
+import {getCityDescription, getCities} from '../utils/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -68,8 +68,9 @@ export default class EventFormEdit extends SmartView {
       </div>`, '');
   }
 
-  get _cities() {
-    return cities.reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
+  _cities() {
+    console.log(getCities())
+    return getCities().reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
   _getEventOfferView({title, price}) {
@@ -121,11 +122,11 @@ export default class EventFormEdit extends SmartView {
 
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-                ${this._data.eventType.name}
+                ${this._data.eventType}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(this._data.eventCity)}" list="destination-list-1">
               <datalist id="destination-list-1">
-                ${this._cities}
+                ${this._cities()}
               </datalist>
             </div>
 
@@ -270,9 +271,10 @@ export default class EventFormEdit extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
+    console.log(getCityDescription(evt.target.value))
     evt.preventDefault();
     this.updateData({
-      eventDestination: {},
+      eventDestination: getCityDescription(evt.target.value),
       eventCity: evt.target.value,
       eventPhotos: [],
     });

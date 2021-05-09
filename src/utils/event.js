@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 // eslint-disable-next-line no-undef
 const duration = require('dayjs/plugin/duration');
 
+let destinations = [];
+
 const getEventDuration = (from, end) => {
   dayjs.extend(duration);
   const fromEventTime = dayjs(from);
@@ -20,47 +22,18 @@ const getEventDuration = (from, end) => {
   }
 };
 
-const eventTypes = [
-  {
-    type:'taxi',
-    name: 'Taxi',
-  },
-  {
-    type:'bus',
-    name: 'Bus',
-  },
-  {
-    type:'train',
-    name: 'Train',
-  },
-  {
-    type:'ship',
-    name: 'Ship',
-  },
-  {
-    type:'transport',
-    name: 'Transport',
-  },
-  {
-    type:'drive',
-    name: 'Drive',
-  },
-  {
-    type:'flight',
-    name: 'Flight',
-  },
-  {
-    type:'check-in',
-    name: 'Check-in',
-  },
-  {
-    type:'sightseeing',
-    name: 'Sightseeing',
-  },
-  {
-    type:'restaurant',
-    name: 'Restaurant',
-  },
-];
+const saveDestinations = (data) => {
+  destinations = data;
+};
 
-export {getEventDuration, eventTypes};
+const getCityDescription = (cityName) => {
+  console.log(destinations)
+  const isCity = destinations.filter((item) => item.name === cityName);
+  return isCity[0].description
+};
+
+const getCities = () => {
+  return destinations.map((item) => item.name);
+}
+
+export {getEventDuration, getCityDescription, saveDestinations, getCities};

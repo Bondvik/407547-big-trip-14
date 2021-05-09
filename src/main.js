@@ -8,6 +8,7 @@ import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from './const.js';
+import {saveDestinations} from './utils/event.js';
 import Api from './api.js';
 
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -73,9 +74,12 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 filterPresenter.init();
 tripPresenter.init();
 
-api.getPoints()
+api.getDestinations()
+  .then((destinations) => {
+    saveDestinations(destinations);
+    return api.getPoints();
+  })
   .then((points) => {
-    console.log(points)
     eventsModel.setEvents(UpdateType.INIT, points);
 
     const tripMainElement = document.querySelector('.trip-main');
@@ -86,6 +90,7 @@ api.getPoints()
 
     render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
+
   })
   .catch((e) => {
     eventsModel.setEvents(UpdateType.INIT, []);

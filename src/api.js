@@ -26,7 +26,7 @@ export default class Api {
   getDestinations() {
     return this._load({url: 'destinations'})
       .then(Api.toJSON)
-      .then((points) => points.map(EventsModel.adaptToClient));
+      .then((points) => points);
   }
 
   getOffers() {
