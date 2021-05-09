@@ -1,9 +1,7 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
-import {nanoid} from 'nanoid';
 import he from 'he';
-import {eventTypes, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
-import {getCityDescription, getCities} from '../utils/event.js';
+import {getCityDescription, getCities, getOffer, getOffers} from '../utils/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -30,6 +28,7 @@ export default class EventFormEdit extends SmartView {
 
     this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
     this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
+    this._offerClickHandler = this._offerClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setStartTime();
@@ -60,23 +59,22 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _types() {
-    return eventTypes.reduce((accumulator, item) =>
+    return getOffers().reduce((accumulator, item) =>
       `${accumulator}
       <div class="event__type-item">
-        <input id="event-type-${item.type}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}">
-        <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-${this._data.id}" data-type=${item.type}>${item.name}</label>
+        <input id="event-type-${item}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}">
+        <label class="event__type-label  event__type-label--${item}" for="event-type-${item}-${this._data.id}" data-type=${item}>${item}</label>
       </div>`, '');
   }
 
   _cities() {
-    console.log(getCities())
     return getCities().reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
-  _getEventOfferView({title, price}) {
+  _getEventOfferView({title, price, isChecked}) {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" data-offer-name="${title}" type="checkbox" name="event-offer-${title}" ${isChecked ? 'checked' : ''}>
         <label class="event__offer-label" for="event-offer-${title}-1">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
@@ -243,9 +241,7 @@ export default class EventFormEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    if (this._mode === Mode.ADD) {
-      this._data.id = nanoid();
-    }
+    this._data.eventOffers = this._data.eventOffers.filter((item) => item.isChecked);
     this._callback.formSubmit(EventFormEdit.parseDataToEvent(this._data));
   }
 
@@ -261,32 +257,36 @@ export default class EventFormEdit extends SmartView {
     changePrice.addEventListener('change', this._priceChangeHandler);
     changeDestination.addEventListener('change', this._destinationChangeHandler);
     selectTypes.forEach((item) => item.addEventListener('click', this._typeClickHandler));
+
+    const availableOffers = this.getElement().querySelector('.event__available-offers');
+    availableOffers.addEventListener('click', this._offerClickHandler);
   }
 
   _priceChangeHandler(evt) {
+    console.log(evt.target.value)
     evt.preventDefault();
     this.updateData({
-      eventTotal: evt.target.value,
+      eventTotal: Number(evt.target.value),
     }, true);
   }
 
   _destinationChangeHandler(evt) {
     console.log(getCityDescription(evt.target.value))
     evt.preventDefault();
+    const distinationDescription = getCityDescription(evt.target.value);
     this.updateData({
-      eventDestination: getCityDescription(evt.target.value),
+      eventDestination: distinationDescription.description,
       eventCity: evt.target.value,
-      eventPhotos: [],
+      eventPhotos: distinationDescription.pictures,
     });
   }
 
   _typeClickHandler(evt) {
-    // const eventType = evt.target.dataset.type;
-    // const type = eventTypes.find(({type}) => type === eventType);
     evt.preventDefault();
+    console.log(getOffer(evt.target.dataset.type))
     this.updateData({
       eventType: evt.target.dataset.type,
-      //eventOffers: createEventOffers(),
+      eventOffers: getOffer(evt.target.dataset.type)[0].offers,
     });
   }
 
@@ -300,6 +300,15 @@ export default class EventFormEdit extends SmartView {
     this.updateData({
       eventEndTime: userDate,
     }, true);
+  }
+
+  _offerClickHandler(evt) {
+    //console.log(getOffer())
+
+    if (evt.target.classList.contains('event__offer-checkbox')) {
+      const selectedOffer = this._data.eventOffers.filter((item) => item.title === evt.target.dataset.offerName );
+      selectedOffer[0].isChecked = !selectedOffer[0].isChecked;
+    }
   }
 
   _formDeleteClickHandler(evt) {

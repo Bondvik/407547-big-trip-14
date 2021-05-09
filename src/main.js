@@ -8,7 +8,7 @@ import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from './const.js';
-import {saveDestinations} from './utils/event.js';
+import {saveDestinations, saveOffers} from './utils/event.js';
 import Api from './api.js';
 
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -77,6 +77,10 @@ tripPresenter.init();
 api.getDestinations()
   .then((destinations) => {
     saveDestinations(destinations);
+    return api.getOffers();
+  })
+  .then((offers) => {
+    saveOffers(offers);
     return api.getPoints();
   })
   .then((points) => {

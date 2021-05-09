@@ -35,11 +35,7 @@ const FilterType = {
 
 const DEFAULT_EVENT = {
   id: null,
-  eventType: {
-    type:'bus',
-    name: 'Bus',
-    icon: 'bus.png',
-  },
+  eventType: 'bus',
   eventCity: '',
   eventOffers: [],
   eventDestination: '',

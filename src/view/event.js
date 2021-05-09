@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-//import {getEventDuration} from '../mock/event.js';
 import AbstractView from './abstract.js';
 
 export default class Event extends AbstractView {

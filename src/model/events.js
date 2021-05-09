@@ -49,6 +49,7 @@ export default class Events extends Observer {
   static adaptToClient(event) {
     const eventStartTime =event.date_from !== null ? new Date(event.date_from) : event.date_from;
     const eventEndTime = event.date_to !== null ? new Date(event.date_to) : event.date_to;
+    event.offers.forEach((item) => item.isChecked = true);
     const adaptedEvent = Object.assign(
       {},
       {

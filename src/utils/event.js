@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 const duration = require('dayjs/plugin/duration');
 
 let destinations = [];
+let offers = [];
 
 const getEventDuration = (from, end) => {
   dayjs.extend(duration);
@@ -27,13 +28,33 @@ const saveDestinations = (data) => {
 };
 
 const getCityDescription = (cityName) => {
-  console.log(destinations)
   const isCity = destinations.filter((item) => item.name === cityName);
-  return isCity[0].description
+  return isCity.length > 0 ? isCity[0] : {name: null, description: null, pictures: []}
 };
 
 const getCities = () => {
   return destinations.map((item) => item.name);
 }
 
-export {getEventDuration, getCityDescription, saveDestinations, getCities};
+const saveOffers = (data) => {
+  offers = data.map(item => ({...item, isChecked: false}));
+}
+
+const getOffer = (offerType) => {
+  const offer = offers.filter((offer) => offer.type === offerType);
+  return offer;
+}
+
+const getOffers = () => {
+  return offers.map((offer) => offer.type);
+}
+
+export {
+  getEventDuration,
+  getCityDescription,
+  saveDestinations,
+  getCities,
+  saveOffers,
+  getOffer,
+  getOffers
+};
