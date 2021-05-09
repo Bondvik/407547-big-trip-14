@@ -31,7 +31,7 @@ const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
 //Точки маршрута и формы добавления/редактирования маршрута
-const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel);
+const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel, api);
 
 const handleEventNewFormClose = () => {
   remove(statisticsComponent);
@@ -56,7 +56,7 @@ const handlePageMenuClick = (menuItem) => {
       tripPresenter.destroy();
       // Показать статистику
       statisticsComponent = new StatisticsView(eventsModel.getEvents());
-      render(pageMainElement, statisticsComponent, PositionOfRender.BEFOREEND);
+      render(pageMainElement, statisticsComponent, PositionOfRender.AFTERBEGIN);
       pageNavigationComponent.setMenuItem(MenuItem.STATS);
       break;
   }

@@ -10,7 +10,7 @@ import LoadingView from '../view/loading.js';
 import {filter} from '../utils/filter.js';
 
 export default class Trip {
-  constructor(tripEventsElement, eventsModel, filterModel) {
+  constructor(tripEventsElement, eventsModel, filterModel, api) {
     this._tripEventsContainer = tripEventsElement;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
@@ -24,6 +24,7 @@ export default class Trip {
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
+    this._api = api;
 
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -42,6 +43,7 @@ export default class Trip {
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderEvents();
+    this._renderSort();
   }
 
   createPoint(callback) {
@@ -80,7 +82,10 @@ export default class Trip {
     // updatePoint - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, updatePoint);
+        // this._eventsModel.updateEvent(updateType, updatePoint);
+        this._api.updatePoint(updatePoint).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, updatePoint);
@@ -102,6 +107,7 @@ export default class Trip {
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
         this._clearEventList({resetSortType: true});
+        this._renderSort();
         this._renderEventsList();
         this._renderEvents();
         break;
@@ -139,7 +145,7 @@ export default class Trip {
   }
 
   _renderEventsList() {
-    this._renderSort();
+    //this._renderSort();
     render(this._tripEventsContainer, this._eventsListComponent, PositionOfRender.BEFOREEND);
   }
 
