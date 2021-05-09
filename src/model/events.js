@@ -76,9 +76,11 @@ export default class Events extends Observer {
         'base_price': event.eventTotal,
         'date_from': event.eventStartTime instanceof Date ? event.eventStartTime.toISOString() : null, // На сервере дата хранится в ISO формате
         'date_to': event.eventEndTime instanceof Date ? event.eventEndTime.toISOString() : null,
-        'destination.description': event.eventDestination ? event.eventDestination : '',
-        'destination.name': event.eventCity ? event.eventCity : '',
-        'destination.pictures': event.eventPhotos ? event.eventPhotos : [],
+        'destination': {
+          'description': event.eventDestination ? event.eventDestination : '',
+          'pictures': event.eventPhotos ? event.eventPhotos : [],
+          'name': event.eventCity ? event.eventCity : '',
+        },
         'id': event.id,
         'is_favorite': event.isFavorite ? event.isFavorite : false,
         'offers': event.eventOffers ? event.eventOffers : [],

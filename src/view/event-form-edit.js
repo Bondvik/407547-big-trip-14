@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import {nanoid} from 'nanoid';
 import he from 'he';
-import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
+import {cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
+import {eventTypes} from '../utils/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -42,7 +43,7 @@ export default class EventFormEdit extends SmartView {
 
   get _photos() {
     const eventListPhotos = this._data.eventPhotos.reduce((accumulator, item) => (
-      `${accumulator}<img class="event__photo" src="${item}" alt="Event photo">`
+      `${accumulator}<img class="event__photo" src="${item.src}" alt="${item.description}">`
     ), '');
 
     if (!eventListPhotos.length) {
@@ -71,14 +72,14 @@ export default class EventFormEdit extends SmartView {
     return cities.reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
-  _getEventOfferView(item) {
+  _getEventOfferView({title, price}) {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.eventOfferType}-1" type="checkbox" name="event-offer-${item.type}">
-        <label class="event__offer-label" for="event-offer-${item.eventOfferType}-1">
-          <span class="event__offer-title">${item.eventOfferName}</span>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}">
+        <label class="event__offer-label" for="event-offer-${title}-1">
+          <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${item.evantOfferPrice}</span>
+          <span class="event__offer-price">${price}</span>
         </label>
       </div>`
     );
@@ -106,7 +107,7 @@ export default class EventFormEdit extends SmartView {
             <div class="event__type-wrapper">
               <label class="event__type  event__type-btn" for="event-type-toggle-1">
                 <span class="visually-hidden">Choose event type</span>
-                <img class="event__type-icon" width="17" height="17" src="img/icons/${this._data.eventType.icon}" alt="Event type icon">
+                <img class="event__type-icon" width="17" height="17" src="img/icons/${this._data.eventType}.png" alt="Event type icon">
               </label>
               <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -265,25 +266,25 @@ export default class EventFormEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       eventTotal: evt.target.value,
-    });
+    }, true);
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      eventDestination: getEventDestination(),
+      eventDestination: {},
       eventCity: evt.target.value,
-      eventPhotos: getEventPhotos(),
+      eventPhotos: [],
     });
   }
 
   _typeClickHandler(evt) {
-    const eventType = evt.target.dataset.type;
-    const type = eventTypes.find(({type}) => type === eventType);
+    // const eventType = evt.target.dataset.type;
+    // const type = eventTypes.find(({type}) => type === eventType);
     evt.preventDefault();
     this.updateData({
-      eventType: type,
-      eventOffers: createEventOffers(),
+      eventType: evt.target.dataset.type,
+      //eventOffers: createEventOffers(),
     });
   }
 

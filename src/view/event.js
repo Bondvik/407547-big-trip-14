@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getEventDuration} from '../mock/event.js';
+//import {getEventDuration} from '../mock/event.js';
 import AbstractView from './abstract.js';
 
 export default class Event extends AbstractView {
@@ -14,12 +14,12 @@ export default class Event extends AbstractView {
     return this._event.eventOffers.reduce((accumulator, item) => accumulator + this._getEventOffer(item), '');
   }
 
-  _getEventOffer(item) {
+  _getEventOffer({title, price}) {
     return (
       `<li class="event__offer">
-        <span class="event__offer-title">${item.eventOfferName}</span>
+        <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${item.evantOfferPrice}</span>
+        <span class="event__offer-price">${price}</span>
       </li>`
     );
   }
@@ -30,7 +30,7 @@ export default class Event extends AbstractView {
         <div class="event">
           <time class="event__date" datetime="2019-03-18">${dayjs(this._event.eventStartTime).format('MMM DD')}</time>
           <div class="event__type">
-            <img class="event__type-icon" width="42" height="42" src="img/icons/${this._event.eventType.icon}" alt="Event type icon">
+            <img class="event__type-icon" width="42" height="42" src="img/icons/${this._event.eventType}.png" alt="Event type icon">
           </div>
           <h3 class="event__title">${this._event.eventType.name} ${this._event.eventCity}</h3>
           <div class="event__schedule">
@@ -39,7 +39,7 @@ export default class Event extends AbstractView {
               &mdash;
               <time class="event__end-time" datetime="2019-03-18T11:00">${dayjs(this._event.eventEndTime).format('HH:mm')}</time>
             </p>
-            <p class="event__duration">${getEventDuration(this._event.eventStartTime, this._event.eventEndTime)}</p>
+            <p class="event__duration">${this._event.eventDuration}</p>
           </div>
           <p class="event__price">
             &euro;&nbsp;<span class="event__price-value">${this._event.eventTotal}</span>

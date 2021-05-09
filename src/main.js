@@ -75,6 +75,7 @@ tripPresenter.init();
 
 api.getPoints()
   .then((points) => {
+    console.log(points)
     eventsModel.setEvents(UpdateType.INIT, points);
 
     const tripMainElement = document.querySelector('.trip-main');

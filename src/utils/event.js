@@ -20,4 +20,47 @@ const getEventDuration = (from, end) => {
   }
 };
 
-export {getEventDuration};
+const eventTypes = [
+  {
+    type:'taxi',
+    name: 'Taxi',
+  },
+  {
+    type:'bus',
+    name: 'Bus',
+  },
+  {
+    type:'train',
+    name: 'Train',
+  },
+  {
+    type:'ship',
+    name: 'Ship',
+  },
+  {
+    type:'transport',
+    name: 'Transport',
+  },
+  {
+    type:'drive',
+    name: 'Drive',
+  },
+  {
+    type:'flight',
+    name: 'Flight',
+  },
+  {
+    type:'check-in',
+    name: 'Check-in',
+  },
+  {
+    type:'sightseeing',
+    name: 'Sightseeing',
+  },
+  {
+    type:'restaurant',
+    name: 'Restaurant',
+  },
+];
+
+export {getEventDuration, eventTypes};
