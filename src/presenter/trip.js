@@ -6,6 +6,7 @@ import PointNewPresenter from './point-new.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
 import SortView from '../view/sort-list.js';
+import LoadingView from '../view/loading.js';
 import {filter} from '../utils/filter.js';
 
 export default class Trip {
@@ -16,11 +17,13 @@ export default class Trip {
 
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
+    this._loadingComponent = new LoadingView();
 
     this._tripEventsListContainer = null;
     this._sortComponent = null;
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -102,6 +105,12 @@ export default class Trip {
         this._renderEventsList();
         this._renderEvents();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderEventsList();
+        this._renderEvents();
+        break;
     }
   }
 
@@ -141,6 +150,11 @@ export default class Trip {
   }
 
   _renderEvents() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const events = this._getEvents();
     if (events && events.length) {
       events.forEach((event) => {
@@ -150,6 +164,10 @@ export default class Trip {
       this._renderNoEvents();
     }
     render(this._tripEventsContainer, this._tripEventsListContainer, PositionOfRender.BEFOREEND);
+  }
+
+  _renderLoading() {
+    render(this._eventsListComponent, this._loadingComponent, PositionOfRender.AFTERBEGIN);
   }
 
   _renderNoEvents() {
@@ -163,6 +181,7 @@ export default class Trip {
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
     remove(this._listEmptyComponent);
+    remove(this._loadingComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
