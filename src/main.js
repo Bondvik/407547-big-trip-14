@@ -70,8 +70,6 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   tripPresenter.createPoint(handleEventNewFormClose);
 });
 
-pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
-
 filterPresenter.init();
 tripPresenter.init();
 
