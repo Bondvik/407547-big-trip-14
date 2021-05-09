@@ -2,6 +2,11 @@ import dayjs from 'dayjs';
 
 const BAR_HEIGHT = 55;
 
+const getTypesUniq = (events) => {
+  const eventsTypes = events.map((event) => event.eventType.type);
+  return [...new Set(eventsTypes)];
+};
+
 const getDuration = (startTime, endTime) => {
   return dayjs(endTime).diff(dayjs(startTime));
 };
@@ -37,4 +42,11 @@ const humanizeDuration = (duration) => {
   }
 };
 
-export {BAR_HEIGHT, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration};
+export {
+  BAR_HEIGHT,
+  getTypesUniq,
+  getPriceByTripType,
+  getCountByTripType,
+  getDurationByTripType,
+  humanizeDuration
+};

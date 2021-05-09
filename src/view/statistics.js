@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
-import {BAR_HEIGHT, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration} from '../utils/statistics.js';
+import {BAR_HEIGHT, getTypesUniq, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration} from '../utils/statistics.js';
 
 export default class Statistics extends SmartView {
   constructor(events) {
@@ -16,17 +16,14 @@ export default class Statistics extends SmartView {
 
   _renderMoneyChart(moneyCtx, events) {
     // Метод для отрисовки графика финансовых расходов по каждому типу точки маршрута
-    const eventsTypes = events.map((event) => event.eventType.type);
-    const typesUniq = [...new Set(eventsTypes)];
-    const totalPriceByTypes = typesUniq.map((item) => getPriceByTripType(events, item));
-
-    moneyCtx.height = BAR_HEIGHT * typesUniq.length;
+    const totalPriceByTypes = getTypesUniq(events).map((item) => getPriceByTripType(events, item));
+    moneyCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
     return new Chart(moneyCtx, {
       plugins: [ChartDataLabels],
       type: 'horizontalBar',
       data: {
-        labels: typesUniq,
+        labels: getTypesUniq(events),
         datasets: [{
           data: totalPriceByTypes,
           backgroundColor: '#ffffff',
@@ -91,17 +88,14 @@ export default class Statistics extends SmartView {
 
   _renderTypeChart(typeCtx, events) {
     // Метод для отрисовки графика количества того или иного типа точки маршрута
-    const eventsTypes = events.map((event) => event.eventType.type);
-    const typesUniq = [...new Set(eventsTypes)];
-    const countByEventTypes = typesUniq.map((item) => getCountByTripType(events, item));
-
-    typeCtx.height = BAR_HEIGHT * typesUniq.length;
+    const countByEventTypes = getTypesUniq(events).map((item) => getCountByTripType(events, item));
+    typeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
     return new Chart(typeCtx, {
       plugins: [ChartDataLabels],
       type: 'horizontalBar',
       data: {
-        labels: typesUniq,
+        labels: getTypesUniq(events),
         datasets: [{
           data: countByEventTypes,
           backgroundColor: '#ffffff',
@@ -166,17 +160,14 @@ export default class Statistics extends SmartView {
 
   _renderTimeChart(timeCtx, events) {
     // Метод для отрисовки графика затраченного времени относительно типа точки маршрута
-    const eventsTypes = events.map((event) => event.eventType.type);
-    const typesUniq = [...new Set(eventsTypes)];
-    const durationEventTypes = typesUniq.map((item) => getDurationByTripType(events, item));
-
-    timeCtx.height = BAR_HEIGHT * typesUniq.length;
+    const durationEventTypes = getTypesUniq(events).map((item) => getDurationByTripType(events, item));
+    timeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
     return new Chart(timeCtx, {
       plugins: [ChartDataLabels],
       type: 'horizontalBar',
       data: {
-        labels: typesUniq,
+        labels: getTypesUniq(events),
         datasets: [{
           data: durationEventTypes,
           backgroundColor: '#ffffff',
