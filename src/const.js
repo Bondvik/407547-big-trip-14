@@ -9,6 +9,7 @@ const Mode = {
 const State = {
   SAVING: 'SAVING',
   DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
 
 const SortType = {

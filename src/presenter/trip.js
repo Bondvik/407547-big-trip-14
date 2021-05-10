@@ -84,25 +84,39 @@ export default class Trip {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this._eventPresenter[updatePoint.id].setViewState(State.SAVING);
-        this._api.updatePoint(updatePoint).then((response) => {
-          this._eventsModel.updateEvent(updateType, response);
-        });
+        this._api.updatePoint(updatePoint)
+          .then((response) => {
+            this._eventsModel.updateEvent(updateType, response);
+          })
+          .catch(() => {
+            //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
+            this._eventPresenter[updatePoint.id].setViewState(State.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
         this._pointNewPresenter.setSaving();
-        this._api.addPoint(updatePoint).then((response) => {
-          this._eventsModel.addEvent(updateType, response);
-        });
+        this._api.addPoint(updatePoint)
+          .then((response) => {
+            this._eventsModel.addEvent(updateType, response);
+          })
+          .catch(() => {
+            //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
+            this._pointNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_EVENT:
         this._eventPresenter[updatePoint.id].setViewState(State.DELETING);
-        this._api.deletePoint(updatePoint).then(() => {
-          // Обратите внимание, метод удаления задачи на сервере
-          // ничего не возвращает. Это и верно,
-          // ведь что можно вернуть при удалении задачи?
-          // Поэтому в модель мы всё также передаем update
-          this._eventsModel.deleteEvent(updateType, updatePoint);
-        });
+        this._api.deletePoint(updatePoint)
+          .then(() => {
+            // Обратите внимание, метод удаления задачи на сервере
+            // ничего не возвращает. Это и верно,
+            // ведь что можно вернуть при удалении задачи?
+            // Поэтому в модель мы всё также передаем update
+            this._eventsModel.deleteEvent(updateType, updatePoint);
+          })
+          .catch(() => {
+            this._eventPresenter[updatePoint.id].setViewState(State.ABORTING);
+          });
         break;
     }
   }

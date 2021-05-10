@@ -54,6 +54,19 @@ export default class PointNew {
     });
   }
 
+  //В презентераз формы добавления задачи используем метод (качания головой) в случае отмены действия
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventEditComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,

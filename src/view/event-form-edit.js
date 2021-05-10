@@ -126,7 +126,7 @@ export default class EventFormEdit extends SmartView {
               <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${this._data.isDisabled ? 'disabled' : ''}>
 
               <div class="event__type-list">
-                <fieldset class="event__type-group" ${this._data.isDisabled ? 'disabled' : ''}>
+                <fieldset class="event__type-group">
                   <legend class="visually-hidden">Event type</legend>
                   ${this._types}
                 </fieldset>
@@ -160,7 +160,13 @@ export default class EventFormEdit extends SmartView {
               ${this._data.isDisabled ? 'disabled' : ''}>
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}">
+              <input
+              class="event__input  event__input--time"
+              id="event-end-time-1"
+              type="text"
+              name="event-end-time"
+              value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}"
+              ${this._data.isDisabled ? 'disabled' : ''}>
             </div>
 
             <div class="event__field-group  event__field-group--price">

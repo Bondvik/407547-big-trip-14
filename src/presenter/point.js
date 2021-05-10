@@ -85,6 +85,14 @@ export default class Point {
 
   //добавим метод, который будет получать необходимое состояние от презентера trip и передавать его формы. Это необходимо для реализации обратной связи на события сохранения и удаления
   setViewState(state) {
+    //в презентере точки используем метод (качания головой) в случае отмены действия
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
     switch (state) {
       case State.SAVING:
         this._eventEditComponent.updateData({
@@ -97,6 +105,10 @@ export default class Point {
           isDisabled: true,
           isDeleting: true,
         });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventEditComponent.shake(resetFormState);
         break;
     }
   }
@@ -132,7 +144,6 @@ export default class Point {
       UpdateType.MINOR,
       point,
     );
-    //this._replaceFormToCard();
   }
 
   _handleDeleteClick(event) {
