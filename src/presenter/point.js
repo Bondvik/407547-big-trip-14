@@ -1,7 +1,7 @@
 import {replace, render, PositionOfRender, remove} from '../utils/render.js';
 import EventView from '../view/event.js';
 import EventFormEditView from '../view/event-form-edit.js';
-import {Mode, UserAction, UpdateType} from '../const.js';
+import {Mode, State, UserAction, UpdateType} from '../const.js';
 
 export default class Point {
   constructor(tripEventsListElement, changeData, changeMode) {
@@ -49,6 +49,11 @@ export default class Point {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
+    if (this._mode === Mode.EDITING) {
+      replace(this._eventComponent, prevEventEditComponent);
+      this._mode = Mode.DEFAULT;
+    }
+
     remove(prevEventComponent);
     remove(prevEventEditComponent);
   }
@@ -76,6 +81,24 @@ export default class Point {
         },
       ),
     );
+  }
+
+  //добавим метод, который будет получать необходимое состояние от презентера trip и передавать его формы. Это необходимо для реализации обратной связи на события сохранения и удаления
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+    }
   }
 
   _replaceCardToForm() {
@@ -109,7 +132,7 @@ export default class Point {
       UpdateType.MINOR,
       point,
     );
-    this._replaceFormToCard();
+    //this._replaceFormToCard();
   }
 
   _handleDeleteClick(event) {

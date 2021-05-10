@@ -1,5 +1,4 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
-import {nanoid} from 'nanoid';
 import EventFormEditView from '../view/event-form-edit.js';
 import {UserAction, UpdateType, Mode, DEFAULT_EVENT} from '../const.js';
 
@@ -47,13 +46,20 @@ export default class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  //метод, который будет получать необходимое состояние от презентера trip и передавать его формы. Это необходимо для реализации обратной связи на события сохранения и удаления
+  setSaving() {
+    this._eventEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   _handleFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
       event,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {

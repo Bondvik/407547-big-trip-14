@@ -6,6 +6,11 @@ const Mode = {
   ADD: 'ADD',
 };
 
+const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
+
 const SortType = {
   DEFAULT: 'day',
   TIME: 'time',
@@ -58,6 +63,7 @@ const MenuItem = {
 
 export {
   Mode,
+  State,
   SortType,
   UserAction,
   UpdateType,
