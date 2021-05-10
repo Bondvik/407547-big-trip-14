@@ -14,26 +14,26 @@ export default class Events extends Observer {
     return this._events;
   }
 
-  updateEvent(updateType, updatePoint) {
-    const index = this._events.findIndex((event) => event.id === updatePoint.id);
+  updateEvent(updatedType, updatedPoint) {
+    const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting event');
     }
 
-    this._events.splice(index, 1, updatePoint);
+    this._events.splice(index, 1, updatedPoint);
 
-    this._notify(updateType, updatePoint);
+    this._notify(updatedType, updatedPoint);
   }
 
-  addEvent(updateType, updatePoint) {
-    this._events.unshift(updatePoint);
+  addEvent(updatedType, updatedPoint) {
+    this._events.unshift(updatedPoint);
 
-    this._notify(updateType, updatePoint);
+    this._notify(updatedType, updatedPoint);
   }
 
-  deleteEvent(updateType, updatePoint) {
-    const index = this._events.findIndex((event) => event.id === updatePoint.id);
+  deleteEvent(updatedType, updatedPoint) {
+    const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting event');
@@ -41,6 +41,6 @@ export default class Events extends Observer {
 
     this._events.splice(index, 1);
 
-    this._notify(updateType);
+    this._notify(updatedType);
   }
 }

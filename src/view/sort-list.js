@@ -35,7 +35,7 @@ export default class Sort extends AbstractView {
     );
   }
   //Для визуального оформления checked кнопок сортировки
-  _getCheckSortType (sortType) {
+  _getCheckSortType(sortType) {
     const tripsSort = document.querySelectorAll('.trip-sort__input');
     for (const trip of tripsSort) {
       trip.checked = false;

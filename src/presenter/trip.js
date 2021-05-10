@@ -46,8 +46,8 @@ export default class Trip {
     this._pointNewPresenter.init();
   }
 
-  _getEvents() {
-    const filterType = this._filterModel.getFilter();
+  get events() {
+    const filterType = this._filterModel.filter;
     const events = this._eventsModel.getEvents();
     const filtredEvents = filter[filterType](events);
     switch (this._currentSortType) {
@@ -60,27 +60,27 @@ export default class Trip {
     }
   }
 
-  _handleViewAction(actionType, updateType, updatePoint) {
+  _handleViewAction(actionType, updatedType, updatedPoint) {
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // updatePoint - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, updatePoint);
+        this._eventsModel.updateEvent(updatedType, updatedPoint);
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, updatePoint);
+        this._eventsModel.addEvent(updatedType, updatedPoint);
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, updatePoint);
+        this._eventsModel.deleteEvent(updatedType, updatedPoint);
         break;
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updatedType, data) {
     // В зависимости от типа изменений решаем, что делать:
-    switch (updateType) {
+    switch (updatedType) {
       case UpdateType.PATCH:
         // - обновить изменения в описании точки
         this._eventPresenter[data.id].init(data);
@@ -95,8 +95,8 @@ export default class Trip {
     }
   }
 
-  _handleEventChange(updatedTask) {
-    this._eventPresenter[updatedTask.id].init(updatedTask);
+  _handleEventChange(updatedPoint) {
+    this._eventPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _handleSortTypeChange(sortType) {
@@ -131,9 +131,8 @@ export default class Trip {
   }
 
   _renderEvents() {
-    const events = this._getEvents();
-    if (events && events.length) {
-      events.forEach((event) => {
+    if (this.events && this.events.length) {
+      this.events.forEach((event) => {
         this._renderEvent(event);
       });
     } else {
@@ -158,7 +157,6 @@ export default class Trip {
       this._currentSortType = SortType.DEFAULT;
       remove(this._sortComponent);
     }
-
   }
 
   _handleModeChange() {

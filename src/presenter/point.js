@@ -54,7 +54,7 @@ export default class Point {
   }
 
   resetView() {
-    if(this._mode !== Mode.DEFAULT) {
+    if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
     }
   }
