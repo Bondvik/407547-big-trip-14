@@ -45,6 +45,9 @@ const DEFAULT_EVENT = {
   eventDuration: '',
   eventTotal: 0,
   isFavorite: 0,
+  isDisabled: false,
+  isSaving: false,
+  isDeleting: false,
 };
 
 const MenuItem = {

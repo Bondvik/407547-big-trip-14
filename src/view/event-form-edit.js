@@ -62,8 +62,17 @@ export default class EventFormEdit extends SmartView {
     return getOffers().reduce((accumulator, item) =>
       `${accumulator}
       <div class="event__type-item">
-        <input id="event-type-${item}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}">
-        <label class="event__type-label  event__type-label--${item}" for="event-type-${item}-${this._data.id}" data-type=${item}>${item}</label>
+        <input
+        id="event-type-${item}-${this._data.id}"
+        class="event__type-input  visually-hidden"
+        type="radio" name="event-type"
+        value="${item}"
+        ${this._data.isDisabled ? 'disabled' : ''}>
+        <label
+        class="event__type-label  event__type-label--${item}"
+        for="event-type-${item}-${this._data.id}"
+        data-type=${item}>${item}
+        </label>
       </div>`, '');
   }
 
@@ -71,10 +80,16 @@ export default class EventFormEdit extends SmartView {
     return getCities().reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
-  _getEventOfferView({title, price, isChecked}) {
+  _getEventOfferView({title, price, isChecked, isDisabled}) {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" data-offer-name="${title}" type="checkbox" name="event-offer-${title}" ${isChecked ? 'checked' : ''}>
+        <input
+        class="event__offer-checkbox  visually-hidden"
+        id="event-offer-${title}-1"
+        data-offer-name="${title}"
+        type="checkbox" name="event-offer-${title}"
+        ${isChecked ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}>
         <label class="event__offer-label" for="event-offer-${title}-1">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
@@ -108,10 +123,10 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Choose event type</span>
                 <img class="event__type-icon" width="17" height="17" src="img/icons/${this._data.eventType}.png" alt="Event type icon">
               </label>
-              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${this._data.isDisabled ? 'disabled' : ''}>
 
               <div class="event__type-list">
-                <fieldset class="event__type-group">
+                <fieldset class="event__type-group" ${this._data.isDisabled ? 'disabled' : ''}>
                   <legend class="visually-hidden">Event type</legend>
                   ${this._types}
                 </fieldset>
@@ -122,7 +137,13 @@ export default class EventFormEdit extends SmartView {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${this._data.eventType}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(this._data.eventCity)}" list="destination-list-1">
+              <input
+              class="event__input  event__input--destination"
+              id="event-destination-1" type="text"
+              name="event-destination"
+              value="${he.encode(this._data.eventCity)}"
+              list="destination-list-1"
+              ${this._data.isDisabled ? 'disabled' : ''}>
               <datalist id="destination-list-1">
                 ${this._cities()}
               </datalist>
@@ -130,7 +151,13 @@ export default class EventFormEdit extends SmartView {
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}">
+              <input
+              class="event__input  event__input--time"
+              id="event-start-time-1"
+              type="text"
+              name="event-start-time"
+              value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}"
+              ${this._data.isDisabled ? 'disabled' : ''}>
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">To</label>
               <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}">
@@ -141,11 +168,19 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(String(this._data.eventTotal))}">
+              <input
+              class="event__input  event__input--price"
+              id="event-price-1"
+              type="number"
+              min="0"
+              step="1"
+              name="event-price"
+              value="${he.encode(String(this._data.eventTotal))}"
+              ${this._data.isDisabled ? 'disabled' : ''}>
             </div>
 
-            <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${this._mode === Mode.EDITING ? 'Delete' : 'Cancel'}</button>
+            <button class="event__save-btn  btn  btn--blue" type="submit">${this._data.isSaving ? 'Saving...' : 'Save'}</button>
+            <button class="event__reset-btn" type="reset">${this._mode === Mode.EDITING ? `${this._data.isDeleting ? 'Deleting...' : 'Delete'}` : 'Cancel'}</button>
             ${this._createRollUpButtonTemplate(this._mode)}
           </header>
           <section class="event__details">
@@ -317,6 +352,11 @@ export default class EventFormEdit extends SmartView {
     return Object.assign(
       {},
       event,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
   }
 
@@ -325,6 +365,11 @@ export default class EventFormEdit extends SmartView {
       {},
       data,
     );
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 }

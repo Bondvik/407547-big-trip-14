@@ -88,10 +88,18 @@ export default class Trip {
         });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, updatePoint);
+        this._api.addPoint(updatePoint).then((response) => {
+          this._eventsModel.addEvent(updateType, response);
+        });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, updatePoint);
+        this._api.deletePoint(updatePoint).then(() => {
+          // Обратите внимание, метод удаления задачи на сервере
+          // ничего не возвращает. Это и верно,
+          // ведь что можно вернуть при удалении задачи?
+          // Поэтому в модель мы всё также передаем update
+          this._eventsModel.deleteEvent(updateType, updatePoint);
+        });
         break;
     }
   }
