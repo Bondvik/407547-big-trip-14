@@ -1,6 +1,6 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
 import {sortEventDown, compareEventPrice, sortEventDay} from '../mock/util.js';
-import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType, State} from '../const.js';
 import PointPresenter from './point.js';
 import PointNewPresenter from './point-new.js';
 import EventsListView from '../view/events-list.js';
@@ -80,19 +80,22 @@ export default class Trip {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // updatePoint - обновленные данные
+    //Перед отправкой запроса на сервер просим презентеры точек или формы добавления точки заблокировать форму и установить состояние "Удаляется/добавляется".
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        // this._eventsModel.updateEvent(updateType, updatePoint);
+        this._eventPresenter[updatePoint.id].setViewState(State.SAVING);
         this._api.updatePoint(updatePoint).then((response) => {
           this._eventsModel.updateEvent(updateType, response);
         });
         break;
       case UserAction.ADD_EVENT:
+        this._pointNewPresenter.setSaving();
         this._api.addPoint(updatePoint).then((response) => {
           this._eventsModel.addEvent(updateType, response);
         });
         break;
       case UserAction.DELETE_EVENT:
+        this._eventPresenter[updatePoint.id].setViewState(State.DELETING);
         this._api.deletePoint(updatePoint).then(() => {
           // Обратите внимание, метод удаления задачи на сервере
           // ничего не возвращает. Это и верно,
@@ -153,7 +156,6 @@ export default class Trip {
   }
 
   _renderEventsList() {
-    //this._renderSort();
     render(this._tripEventsContainer, this._eventsListComponent, PositionOfRender.BEFOREEND);
   }
 
