@@ -56,7 +56,7 @@ export default class Statistics extends SmartView {
               fontColor: '#000000',
               padding: 5,
               fontSize: 13,
-              callback: (val) => `${val}`,
+              callback: (val) => `${val.toUpperCase()}`,
             },
             gridLines: {
               display: false,
@@ -128,7 +128,7 @@ export default class Statistics extends SmartView {
               fontColor: '#000000',
               padding: 5,
               fontSize: 13,
-              callback: (val) => `${val}`,
+              callback: (val) => `${val.toUpperCase()}`,
             },
             gridLines: {
               display: false,
@@ -200,7 +200,7 @@ export default class Statistics extends SmartView {
               fontColor: '#000000',
               padding: 5,
               fontSize: 13,
-              callback: (val) => `${val}`,
+              callback: (val) => `${val.toUpperCase()}`,
             },
             gridLines: {
               display: false,

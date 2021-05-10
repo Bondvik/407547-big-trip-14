@@ -2,26 +2,21 @@ import dayjs from 'dayjs';
 
 const BAR_HEIGHT = 55;
 
-const getTypesUniq = (events) => {
-  const eventsTypes = events.map((event) => event.eventType.type);
-  return [...new Set(eventsTypes)];
-};
-
 const getDuration = (startTime, endTime) => {
   return dayjs(endTime).diff(dayjs(startTime));
 };
 
 const getPriceByTripType = (events, type) => {
-  const eventsByType = events.filter((item) => item.eventType.type === type);
+  const eventsByType = events.filter((item) => item.eventType === type);
   return eventsByType.reduce((accumulator, item) => accumulator + item.eventTotal, 0);
 };
 
 const getCountByTripType = (events, type) => {
-  return events.filter((item) => item.eventType.type === type).length;
+  return events.filter((item) => item.eventType === type).length;
 };
 
 const getDurationByTripType = (events, type) => {
-  const eventsByType = events.filter((item) => item.eventType.type === type);
+  const eventsByType = events.filter((item) => item.eventType === type);
   const duration = eventsByType.reduce((accumulator, item) => {
     return accumulator + getDuration(item.eventStartTime, item.eventEndTime);
   }, 0 );
@@ -42,11 +37,9 @@ const humanizeDuration = (duration) => {
   }
 };
 
-export {
-  BAR_HEIGHT,
-  getTypesUniq,
-  getPriceByTripType,
-  getCountByTripType,
-  getDurationByTripType,
-  humanizeDuration
+const getTypesUniq = (events) => {
+  const eventsTypes = events.map((event) => event.eventType);
+  return [...new Set(eventsTypes)];
 };
+
+export {BAR_HEIGHT, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration, getTypesUniq};

@@ -34,20 +34,20 @@ const getCityDescription = (cityName) => {
 
 const getCities = () => {
   return destinations.map((item) => item.name);
-}
+};
 
 const saveOffers = (data) => {
-  offers = data.map(item => ({...item, isChecked: false}));
-}
+  offers = data.map((item) => ({...item, isChecked: false}));
+};
 
 const getOffer = (offerType) => {
   const offer = offers.filter((offer) => offer.type === offerType);
   return offer;
-}
+};
 
 const getOffers = () => {
   return offers.map((offer) => offer.type);
-}
+};
 
 export {
   getEventDuration,

@@ -96,11 +96,10 @@ api.getDestinations()
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
 
   })
-  .catch((e) => {
+  .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
     render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
-    console.error(e);
   });
 
 

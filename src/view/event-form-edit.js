@@ -263,7 +263,6 @@ export default class EventFormEdit extends SmartView {
   }
 
   _priceChangeHandler(evt) {
-    console.log(evt.target.value)
     evt.preventDefault();
     this.updateData({
       eventTotal: Number(evt.target.value),
@@ -271,7 +270,6 @@ export default class EventFormEdit extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
-    console.log(getCityDescription(evt.target.value))
     evt.preventDefault();
     const distinationDescription = getCityDescription(evt.target.value);
     this.updateData({
@@ -283,7 +281,6 @@ export default class EventFormEdit extends SmartView {
 
   _typeClickHandler(evt) {
     evt.preventDefault();
-    console.log(getOffer(evt.target.dataset.type))
     this.updateData({
       eventType: evt.target.dataset.type,
       eventOffers: getOffer(evt.target.dataset.type)[0].offers,
@@ -303,8 +300,6 @@ export default class EventFormEdit extends SmartView {
   }
 
   _offerClickHandler(evt) {
-    //console.log(getOffer())
-
     if (evt.target.classList.contains('event__offer-checkbox')) {
       const selectedOffer = this._data.eventOffers.filter((item) => item.title === evt.target.dataset.offerName );
       selectedOffer[0].isChecked = !selectedOffer[0].isChecked;
