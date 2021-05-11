@@ -9,8 +9,11 @@ import 'flatpickr/dist/flatpickr.min.css';
 export default class EventFormEdit extends SmartView {
   constructor(event = DEFAULT_EVENT, mode = Mode.EDITING) {
     super();
+    this._offers = null;
+    this._cloneData = null;
     this._mode = mode;
     this._data = EventFormEdit.parseEventToData(event);
+
     this._datepicker = null;
     this._startDatePicker = null;
     this._endDatePicker = null;
@@ -19,6 +22,12 @@ export default class EventFormEdit extends SmartView {
       enableTime: true,
       time_24hr: true,
     };
+
+    //клонируем объект (для возврата карточки точки маршрута в состояние до изменений)
+    this._cloneData = JSON.parse(JSON.stringify(this._data));
+    this._cloneData.eventStartTime = this._data.eventStartTime;
+    this._cloneData.eventEndTime = this._data.eventEndTime;
+
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
@@ -36,8 +45,9 @@ export default class EventFormEdit extends SmartView {
   }
 
   get _eventOfferSelector() {
-    const offers = this._data.eventOffers.map((item) => item);
-    return offers.reduce((accumulator, item) => accumulator + this._getEventOfferView(item), '');
+    const offers = getOffer(this._data.eventType);
+    this._offers = offers.slice();
+    return offers[0].offers.reduce((accumulator, item) => accumulator + this._getEventOfferView(item), '');
   }
 
   get _photos() {
@@ -80,7 +90,11 @@ export default class EventFormEdit extends SmartView {
     return getCities().reduce((accumulator, item) => `${accumulator}<option value=${item}></option>`, '');
   }
 
-  _getEventOfferView({title, price, isChecked, isDisabled}) {
+  _getEventOfferView({title, price, isDisabled}) {
+    let isChecked = false
+    if (this._data.eventOffers.find((offer) => offer.title === title)) {
+      isChecked = true;
+    }
     return (
       `<div class="event__offer-selector">
         <input
@@ -282,13 +296,14 @@ export default class EventFormEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._data.eventOffers = this._data.eventOffers.filter((item) => item.isChecked);
     this._callback.formSubmit(EventFormEdit.parseDataToEvent(this._data));
   }
 
   _formClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formClick(this._data);
+    //здесь возвращаем карточку в состояние до редактирования
+    this.updateData(this._cloneData);
+    this._callback.formClick(this._cloneData);
   }
 
   _setInnerHandlers() {
@@ -324,7 +339,7 @@ export default class EventFormEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       eventType: evt.target.dataset.type,
-      eventOffers: getOffer(evt.target.dataset.type)[0].offers,
+      eventOffers: [],
     });
   }
 
@@ -342,8 +357,14 @@ export default class EventFormEdit extends SmartView {
 
   _offerClickHandler(evt) {
     if (evt.target.classList.contains('event__offer-checkbox')) {
-      const selectedOffer = this._data.eventOffers.filter((item) => item.title === evt.target.dataset.offerName );
-      selectedOffer[0].isChecked = !selectedOffer[0].isChecked;
+      const index = this._data.eventOffers.findIndex((item) => item.title === evt.target.dataset.offerName);
+      console.log(index)
+      if (index > -1) {
+        this._data.eventOffers.splice(index, 1)
+      } else {
+        const offer = this._offers[0].offers.filter((item) => item.title === evt.target.dataset.offerName);
+        this._data.eventOffers.push({ title: offer[0].title, price: offer[0].price })
+      }
     }
   }
 

@@ -37,7 +37,7 @@ const getCities = () => {
 };
 
 const saveOffers = (data) => {
-  offers = data.map((item) => ({...item, isChecked: false}));
+  offers = data.map((item) => item);
 };
 
 const getOffer = (offerType) => {
