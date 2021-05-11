@@ -14,6 +14,8 @@ export default class Point {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleFormClick = this._handleFormClick.bind(this);
+
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
 
@@ -33,7 +35,7 @@ export default class Point {
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._eventEditComponent.setFormClicktHandler(this._handleFormSubmit);
+    this._eventEditComponent.setFormClicktHandler(this._handleFormClick);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if ([prevEventComponent, prevEventEditComponent].includes(null)) {
@@ -130,7 +132,7 @@ export default class Point {
     if (['Escape', 'Esc'].includes(evt.key)) {
       evt.preventDefault();
       this._replaceFormToCard();
-      document.removeEventListener('keydown', this.__escKeyDownHandler);
+      document.removeEventListener('keydown', this._escKeyDownHandler);
     }
   }
 
@@ -144,6 +146,10 @@ export default class Point {
       UpdateType.MINOR,
       point,
     );
+  }
+
+  _handleFormClick() {
+    this._replaceFormToCard();
   }
 
   _handleDeleteClick(event) {

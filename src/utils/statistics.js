@@ -42,4 +42,11 @@ const getTypesUniq = (events) => {
   return [...new Set(eventsTypes)];
 };
 
-export {BAR_HEIGHT, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration, getTypesUniq};
+export {
+  BAR_HEIGHT,
+  getPriceByTripType,
+  getCountByTripType,
+  getDurationByTripType,
+  humanizeDuration,
+  getTypesUniq
+};
