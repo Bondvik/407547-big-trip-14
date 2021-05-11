@@ -91,7 +91,7 @@ export default class EventFormEdit extends SmartView {
   }
 
   _getEventOfferView({title, price, isDisabled}) {
-    let isChecked = false
+    let isChecked = false;
     if (this._data.eventOffers.find((offer) => offer.title === title)) {
       isChecked = true;
     }
@@ -358,12 +358,11 @@ export default class EventFormEdit extends SmartView {
   _offerClickHandler(evt) {
     if (evt.target.classList.contains('event__offer-checkbox')) {
       const index = this._data.eventOffers.findIndex((item) => item.title === evt.target.dataset.offerName);
-      console.log(index)
       if (index > -1) {
-        this._data.eventOffers.splice(index, 1)
+        this._data.eventOffers.splice(index, 1);
       } else {
         const offer = this._offers[0].offers.filter((item) => item.title === evt.target.dataset.offerName);
-        this._data.eventOffers.push({ title: offer[0].title, price: offer[0].price })
+        this._data.eventOffers.push({ title: offer[0].title, price: offer[0].price });
       }
     }
   }
