@@ -29,7 +29,7 @@ const saveDestinations = (data) => {
 
 const getCityDescription = (cityName) => {
   const isCity = destinations.filter((item) => item.name === cityName);
-  return isCity.length > 0 ? isCity[0] : {name: null, description: null, pictures: []}
+  return isCity.length > 0 ? isCity[0] : {name: null, description: null, pictures: []};
 };
 
 const getCities = () => {
@@ -38,6 +38,7 @@ const getCities = () => {
 
 const saveOffers = (data) => {
   offers = data.map((item) => ({...item, isChecked: false}));
+  console.log(offers)
 };
 
 const getOffer = (offerType) => {
