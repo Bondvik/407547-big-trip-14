@@ -1,67 +1,109 @@
-import {render, PositionOfRender} from '../mock/render.js';
-import {updateItem, SortType, sortEventDown, compareEventPrice} from '../mock/util.js';
-import PointPresenter from '../presenter/point.js';
+import {render, PositionOfRender, remove} from '../utils/render.js';
+import {sortEventDown, compareEventPrice, sortEventDay} from '../mock/util.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import PointPresenter from './point.js';
+import PointNewPresenter from './point-new.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
 import SortView from '../view/sort-list.js';
+import {filter} from '../utils/filter.js';
 
 export default class Trip {
-  constructor(tripEventsElement) {
+  constructor(tripEventsElement, eventsModel, filterModel) {
     this._tripEventsContainer = tripEventsElement;
+    this._eventsModel = eventsModel;
+    this._filterModel = filterModel;
+
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
-    this._sortComponent = new SortView();
+
     this._tripEventsListContainer = null;
+    this._sortComponent = null;
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleEventViewChange = this._handleEventViewChange.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._eventsListComponent, this._handleEventViewChange);
   }
 
-  init(events) {
-    this._events = events.slice();
-    // 1. В отличии от сортировки по любому параметру,
-    // исходный порядок можно сохранить только одним способом -
-    // сохранив исходный массив:
-    this._sourcedEvents = [...events];
+  init() {
     this._renderEventsList();
     this._tripEventsListContainer = document.querySelector('.trip-events__list');
     this._renderEvents();
   }
 
-  _handleEventChange(updatedTask) {
-    this._events = updateItem(this._events, updatedTask);
-    this._sourcedEvents = updateItem(this._sourcedEvents, updatedTask);
-    this._eventPresenter[updatedTask.id].init(updatedTask);
+  createPoint() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
   }
 
-  _sortEvents(sortType) {
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _events
-    switch (sortType) {
-      case SortType.PRICE:
-        this._events.sort(compareEventPrice);
-        break;
+  get events() {
+    const filterType = this._filterModel.filter;
+    const events = this._eventsModel.getEvents();
+    const filtredEvents = filter[filterType](events);
+    switch (this._currentSortType) {
       case SortType.TIME:
-        this._events.sort(sortEventDown);
-        break;
-
+        return filtredEvents.sort(sortEventDown);
+      case SortType.PRICE:
+        return filtredEvents.sort(compareEventPrice);
       default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _events исходный массив
-        this._events =  [...this._sourcedEvents];
+        return filtredEvents.sort(sortEventDay);
     }
-    this._currentSortType = sortType;
+  }
+
+  _handleEventViewChange(actionType, updatedType, updatedPoint) {
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // updatePoint - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this._eventsModel.updateEvent(updatedType, updatedPoint);
+        break;
+      case UserAction.ADD_EVENT:
+        this._eventsModel.addEvent(updatedType, updatedPoint);
+        break;
+      case UserAction.DELETE_EVENT:
+        this._eventsModel.deleteEvent(updatedType, updatedPoint);
+        break;
+    }
+  }
+
+  _handleModelEvent(updatedType, data) {
+    // В зависимости от типа изменений решаем, что делать:
+    switch (updatedType) {
+      case UpdateType.PATCH:
+        // - обновить изменения в описании точки
+        this._eventPresenter[data.id].init(data);
+        break;
+      // - обновить весь список точек маршрутов (например, при переключении фильтра)
+      case UpdateType.MINOR:
+      case UpdateType.MAJOR:
+        this._clearEventList({resetSortType: true});
+        this._renderEventsList();
+        this._renderEvents();
+        break;
+    }
+  }
+
+  _handleEventChange(updatedPoint) {
+    this._eventPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
     }
-    // - Сортируем задачи
-    this._sortEvents(sortType);
+    this._currentSortType = sortType;
     // - Очищаем список
     this._clearEventList();
     // - Рендерим список заново
@@ -69,6 +111,10 @@ export default class Trip {
   }
 
   _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._tripEventsContainer, this._sortComponent, PositionOfRender.AFTERBEGIN);
   }
@@ -79,14 +125,14 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    const pointPresenter = new PointPresenter(this._tripEventsListContainer, this._handleEventChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._tripEventsListContainer, this._handleEventViewChange, this._handleModeChange);
     pointPresenter.init(event);
     this._eventPresenter[event.id] = pointPresenter;
   }
 
   _renderEvents() {
-    if (this._events.length) {
-      this._events.forEach((event) => {
+    if (this.events && this.events.length) {
+      this.events.forEach((event) => {
         this._renderEvent(event);
       });
     } else {
@@ -99,14 +145,22 @@ export default class Trip {
     render(this._tripEventsListContainer, this._listEmptyComponent, PositionOfRender.BEFOREEND);
   }
 
-  _clearEventList() {
+  _clearEventList({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
+    remove(this._listEmptyComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+      remove(this._sortComponent);
+    }
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
