@@ -35,18 +35,6 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _handleFilterTypeChange(filterType) {
-    if (this._filterModel.filter === filterType) {
-      return;
-    }
-
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
   get filters() {
     const events = this._eventsModel.getEvents();
 
@@ -67,5 +55,17 @@ export default class Filter {
         count: filter[FilterType.PAST](events).length,
       },
     ];
+  }
+
+  _handleModelEvent() {
+    this.init();
+  }
+
+  _handleFilterTypeChange(filterType) {
+    if (this._filterModel.filter === filterType) {
+      return;
+    }
+
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 }

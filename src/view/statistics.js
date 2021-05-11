@@ -254,11 +254,7 @@ export default class Statistics extends SmartView {
     super.removeElement();
   }
 
-  restoreHandlers() {
-    this._setCharts();
-  }
-
-  _setCharts() {
+  setCharts() {
     // Для отрисовки трёх графиков
     if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
       this._moneyChart = null;
@@ -273,5 +269,9 @@ export default class Statistics extends SmartView {
     this._moneyChart = this._renderMoneyChart(moneyCtx, this._events);
     this._typeChart = this._renderTypeChart(typeCtx, this._events);
     this._timeChart = this._renderTimeChart(timeCtx, this._events);
+  }
+
+  restoreHandlers() {
+    this._setCharts();
   }
 }
