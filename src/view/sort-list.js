@@ -46,12 +46,13 @@ export default class Sort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (!evt.target.classList.contains('trip-sort__input') && !evt.target.classList.contains('trip-sort__btn')) {
+    const {target, target: {dataset: {sortType}}} = evt;
+    if (!target.classList.contains('trip-sort__input') && !target.classList.contains('trip-sort__btn')) {
       return;
     }
-    this._getCheckSortType(evt.target.dataset.sortType);
+    this._getCheckSortType(sortType);
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+    this._callback.sortTypeChange(sortType);
   }
 
   setSortTypeChangeHandler(callback) {

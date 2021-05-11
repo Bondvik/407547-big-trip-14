@@ -18,7 +18,8 @@ export default class Events extends Observer {
     const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting event');
+      // eslint-disable-next-line quotes
+      throw new Error(`Can't update unexisting event`);
     }
 
     this._events.splice(index, 1, updatedPoint);
@@ -36,7 +37,8 @@ export default class Events extends Observer {
     const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting event');
+      // eslint-disable-next-line quotes
+      throw new Error(`Can't delete unexisting event`);
     }
 
     this._events.splice(index, 1);

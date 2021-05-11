@@ -25,13 +25,13 @@ export default class Trip {
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleEventViewChange = this._handleEventViewChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._pointNewPresenter = new PointNewPresenter(this._eventsListComponent, this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._eventsListComponent, this._handleEventViewChange);
   }
 
   init() {
@@ -60,7 +60,7 @@ export default class Trip {
     }
   }
 
-  _handleViewAction(actionType, updatedType, updatedPoint) {
+  _handleEventViewChange(actionType, updatedType, updatedPoint) {
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
@@ -125,7 +125,7 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    const pointPresenter = new PointPresenter(this._tripEventsListContainer, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._tripEventsListContainer, this._handleEventViewChange, this._handleModeChange);
     pointPresenter.init(event);
     this._eventPresenter[event.id] = pointPresenter;
   }
