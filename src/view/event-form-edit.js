@@ -93,9 +93,11 @@ export default class EventFormEdit extends SmartView {
   }
 
   _createRollUpButtonTemplate(mode) {
-    return mode === Mode.EDITING ? `<button class="event__rollup-btn" type="button">
-                                  <span class="visually-hidden">Open event</span>
-                                 </button>`: '';
+    return mode === Mode.EDITING ? (
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    ): '';
   }
 
   getTemplate() {
@@ -122,7 +124,14 @@ export default class EventFormEdit extends SmartView {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${this._data.eventType.name}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(this._data.eventCity)}" list="destination-list-1">
+              <input
+                class="event__input  event__input--destination"
+                id="event-destination-1"
+                type="text"
+                name="event-destination"
+                value="${he.encode(this._data.eventCity)}"
+                list="destination-list-1"
+              />
               <datalist id="destination-list-1">
                 ${this._cities}
               </datalist>
@@ -130,10 +139,21 @@ export default class EventFormEdit extends SmartView {
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}">
+              <input
+                class="event__input  event__input--time"
+                id="event-start-time-1"
+                type="text"
+                name="event-start-time"
+                value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}"
+              />
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}">
+              <input
+                class="event__input  event__input--time"
+                id="event-end-time-1" type="text"
+                name="event-end-time"
+                value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}"
+              />
             </div>
 
             <div class="event__field-group  event__field-group--price">

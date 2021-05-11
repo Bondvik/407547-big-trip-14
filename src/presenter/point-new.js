@@ -68,5 +68,4 @@ export default class PointNew {
       this.destroy();
     }
   }
-
 }
