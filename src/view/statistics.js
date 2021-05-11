@@ -254,7 +254,7 @@ export default class Statistics extends SmartView {
     super.removeElement();
   }
 
-  setCharts() {
+  _setCharts() {
     // Для отрисовки трёх графиков
     if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
       this._moneyChart = null;
