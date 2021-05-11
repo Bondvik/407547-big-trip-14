@@ -1,17 +1,22 @@
-import {render, PositionOfRender} from './mock/render.js';
+import {render, PositionOfRender} from './utils/render.js';
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
+import EventsModel from './model/events.js';
+import FilterModel from './model/filters.js';
 import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
-import FilterView from './view/filter-list.js';
 //TODO: расскоментировать, когда добавлять новые точки маршрута
 //import EventFormAddView from './view/event-form-add.js';
 import {createEvent} from './mock/event.js';
-import {createFilter} from './mock/filter.js';
 
-const EVENT_COUNT = 15;
+const EVENT_COUNT = 4;
 const events = new Array(EVENT_COUNT).fill().map(createEvent);
-const filters = createFilter(events);
+
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
+
+const filterModel = new FilterModel();
 
 //Инфо о маршруте
 const tripMainElement = document.querySelector('.trip-main');
@@ -30,13 +35,19 @@ render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEN
 
 //Фильтры
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
-const filterListComponent = new FilterView(filters);
-render(tripControlsFiltersElement, filterListComponent, PositionOfRender.BEFOREEND);
+const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterModel, eventsModel);
 
 //Сортировка
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
 //Точки маршрута и формы добавления/редактирования маршрута
-const tripPresenter = new TripPresenter(tripEventsElement);
-tripPresenter.init(events);
+const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel);
+
+filterPresenter.init();
+tripPresenter.init();
+
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

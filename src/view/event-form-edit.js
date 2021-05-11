@@ -1,13 +1,18 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
+import {nanoid} from 'nanoid';
+import he from 'he';
 import {eventTypes, cities, getEventDestination, getEventPhotos, createEventOffers} from '../mock/event.js';
+import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
 export default class EventFormEdit extends SmartView {
-  constructor(event) {
+  constructor(event = DEFAULT_EVENT, mode = Mode.EDITING) {
     super();
+    this._mode = mode;
     this._data = EventFormEdit.parseEventToData(event);
+    this._datepicker = null;
     this._startDatePicker = null;
     this._endDatePicker = null;
     this._datePickerConfig = {
@@ -15,10 +20,12 @@ export default class EventFormEdit extends SmartView {
       enableTime: true,
       time_24hr: true,
     };
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
     this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
@@ -85,6 +92,14 @@ export default class EventFormEdit extends SmartView {
     }, data);
   }
 
+  _createRollUpButtonTemplate(mode) {
+    return mode === Mode.EDITING ? (
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    ): '';
+  }
+
   getTemplate() {
     return (
       `<li class="trip-events__item">
@@ -109,7 +124,14 @@ export default class EventFormEdit extends SmartView {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${this._data.eventType.name}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._data.eventCity}" list="destination-list-1">
+              <input
+                class="event__input  event__input--destination"
+                id="event-destination-1"
+                type="text"
+                name="event-destination"
+                value="${he.encode(this._data.eventCity)}"
+                list="destination-list-1"
+              />
               <datalist id="destination-list-1">
                 ${this._cities}
               </datalist>
@@ -117,10 +139,21 @@ export default class EventFormEdit extends SmartView {
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}">
+              <input
+                class="event__input  event__input--time"
+                id="event-start-time-1"
+                type="text"
+                name="event-start-time"
+                value="${dayjs(this._data.eventStartTime).format('DD/MM/YY HH:mm')}"
+              />
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}">
+              <input
+                class="event__input  event__input--time"
+                id="event-end-time-1" type="text"
+                name="event-end-time"
+                value="${dayjs(this._data.eventEndTime).format('DD/MM/YY HH:mm')}"
+              />
             </div>
 
             <div class="event__field-group  event__field-group--price">
@@ -128,24 +161,22 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${this._data.eventTotal}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(String(this._data.eventTotal))}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
-            <button class="event__rollup-btn" type="button">
-              <span class="visually-hidden">Open event</span>
-            </button>
+            <button class="event__reset-btn" type="reset">${this._mode === Mode.EDITING ? 'Delete' : 'Cancel'}</button>
+            ${this._createRollUpButtonTemplate(this._mode)}
           </header>
           <section class="event__details">
-            <section class="event__section  event__section--offers">
+            <section class="event__section  event__section--offers ${this._eventOfferSelector ? '' : 'visually-hidden'}">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
                 ${this._eventOfferSelector}
               </div>
             </section>
 
-            <section class="event__section  event__section--destination">
+            <section class="event__section  event__section--destination ${this._data.eventDestination ? '' : 'visually-hidden'}">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">${this._data.eventDestination}</p>
               ${this._photos}
@@ -156,8 +187,20 @@ export default class EventFormEdit extends SmartView {
     );
   }
 
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   reset(event) {
     this.updateData(EventFormEdit.parseEventToData(event));
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setStartTime() {
@@ -196,8 +239,15 @@ export default class EventFormEdit extends SmartView {
   }
 
   setFormClicktHandler(callback) {
-    this._callback.formClick = callback;
-    this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
+    if (this._mode === Mode.EDITING) {
+      this._callback.formClick = callback;
+      this.getElement().querySelector('form .event__rollup-btn').addEventListener('click', this._formClickHandler);
+    }
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   restoreHandlers() {
@@ -206,10 +256,14 @@ export default class EventFormEdit extends SmartView {
     this._setEndTime();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClicktHandler(this._callback.formClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    if (this._mode === Mode.ADD) {
+      this._data.id = nanoid();
+    }
     this._callback.formSubmit(EventFormEdit.parseDataToEvent(this._data));
   }
 
@@ -220,9 +274,18 @@ export default class EventFormEdit extends SmartView {
 
   _setInnerHandlers() {
     const selectTypes = this.getElement().querySelectorAll('.event__type-label');
+    const changePrice = this.getElement().querySelector('.event__input--price');
     const changeDestination = this.getElement().querySelector('.event__input--destination');
+    changePrice.addEventListener('change', this._priceChangeHandler);
     changeDestination.addEventListener('change', this._destinationChangeHandler);
     selectTypes.forEach((item) => item.addEventListener('click', this._typeClickHandler));
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      eventTotal: evt.target.value,
+    });
   }
 
   _destinationChangeHandler(evt) {
@@ -254,6 +317,11 @@ export default class EventFormEdit extends SmartView {
     this.updateData({
       eventEndTime: userDate,
     }, true);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventFormEdit.parseDataToEvent(this._data));
   }
 
   //превращение данных - в состояние
