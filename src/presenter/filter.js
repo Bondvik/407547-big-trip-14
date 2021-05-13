@@ -11,11 +11,11 @@ export default class Filter {
 
     this._filterComponent = null;
 
-    this._handleFiltertModelChange= this._handleFiltertModelChange.bind(this);
+    this._handleFiltertModelCreate = this._handleFiltertModelCreate.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
 
-    this._eventsModel.addObserver(this._handleFiltertModelChange);
-    this._filterModel.addObserver(this._handleFiltertModelChange);
+    this._eventsModel.addObserver(this._handleFiltertModelCreate);
+    this._filterModel.addObserver(this._handleFiltertModelCreate);
   }
 
   init() {
@@ -57,7 +57,7 @@ export default class Filter {
     ];
   }
 
-  _handleFiltertModelChange() {
+  _handleFiltertModelCreate() {
     this.init();
   }
 
