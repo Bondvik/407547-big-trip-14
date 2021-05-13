@@ -72,7 +72,8 @@ export default class EventFormEdit extends SmartView {
         <label
           class="event__type-label  event__type-label--${item.type}"
           for="event-type-${item.type}-${this._data.id}"
-          data-type=${item.type}>
+          data-type=${item.type}
+          >
           ${item.name}
         </label>
       </div>`, '');

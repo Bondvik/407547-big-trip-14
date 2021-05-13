@@ -1,7 +1,13 @@
-import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {setOptions} from '../utils/set-options.js';
 import SmartView from './smart.js';
-import {BAR_HEIGHT, getTypesUniq, getPriceByTripType, getCountByTripType, getDurationByTripType, humanizeDuration} from '../utils/statistics.js';
+import {
+  BAR_HEIGHT,
+  getTypesUniq,
+  getPriceByTripType,
+  getCountByTripType,
+  getDurationByTripType,
+  humanizeDuration
+} from '../utils/statistics.js';
 
 export default class Statistics extends SmartView {
   constructor(events) {
@@ -19,71 +25,7 @@ export default class Statistics extends SmartView {
     const totalPriceByTypes = getTypesUniq(events).map((item) => getPriceByTripType(events, item));
     moneyCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    return new Chart(moneyCtx, {
-      plugins: [ChartDataLabels],
-      type: 'horizontalBar',
-      data: {
-        labels: getTypesUniq(events),
-        datasets: [{
-          data: totalPriceByTypes,
-          backgroundColor: '#ffffff',
-          hoverBackgroundColor: '#ffffff',
-          anchor: 'start',
-        }],
-      },
-      options: {
-        plugins: {
-          datalabels: {
-            font: {
-              size: 13,
-            },
-            color: '#000000',
-            anchor: 'end',
-            align: 'start',
-            formatter: (val) => `€ ${val}`,
-          },
-        },
-        title: {
-          display: true,
-          text: 'MONEY',
-          fontColor: '#000000',
-          fontSize: 23,
-          position: 'left',
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              fontColor: '#000000',
-              padding: 5,
-              fontSize: 13,
-              callback: (val) => `${val.toUpperCase()}`,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            barThickness: 44,
-          }],
-          xAxes: [{
-            ticks: {
-              display: false,
-              beginAtZero: true,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            minBarLength: 50,
-          }],
-        },
-        legend: {
-          display: false,
-        },
-        tooltips: {
-          enabled: false,
-        },
-      },
-    });
+    setOptions(moneyCtx, getTypesUniq(events), totalPriceByTypes, (val) => `€ ${val}`);
   }
 
   _renderTypeChart(typeCtx, events) {
@@ -91,71 +33,7 @@ export default class Statistics extends SmartView {
     const countByEventTypes = getTypesUniq(events).map((item) => getCountByTripType(events, item));
     typeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    return new Chart(typeCtx, {
-      plugins: [ChartDataLabels],
-      type: 'horizontalBar',
-      data: {
-        labels: getTypesUniq(events),
-        datasets: [{
-          data: countByEventTypes,
-          backgroundColor: '#ffffff',
-          hoverBackgroundColor: '#ffffff',
-          anchor: 'start',
-        }],
-      },
-      options: {
-        plugins: {
-          datalabels: {
-            font: {
-              size: 13,
-            },
-            color: '#000000',
-            anchor: 'end',
-            align: 'start',
-            formatter: (val) => `${val}x`,
-          },
-        },
-        title: {
-          display: true,
-          text: 'TYPE',
-          fontColor: '#000000',
-          fontSize: 23,
-          position: 'left',
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              fontColor: '#000000',
-              padding: 5,
-              fontSize: 13,
-              callback: (val) => `${val.toUpperCase()}`,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            barThickness: 44,
-          }],
-          xAxes: [{
-            ticks: {
-              display: false,
-              beginAtZero: true,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            minBarLength: 50,
-          }],
-        },
-        legend: {
-          display: false,
-        },
-        tooltips: {
-          enabled: false,
-        },
-      },
-    });
+    setOptions(typeCtx, getTypesUniq(events), countByEventTypes, (val) => `${val}x`);
   }
 
   _renderTimeChart(timeCtx, events) {
@@ -163,71 +41,7 @@ export default class Statistics extends SmartView {
     const durationEventTypes = getTypesUniq(events).map((item) => getDurationByTripType(events, item));
     timeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    return new Chart(timeCtx, {
-      plugins: [ChartDataLabels],
-      type: 'horizontalBar',
-      data: {
-        labels: getTypesUniq(events),
-        datasets: [{
-          data: durationEventTypes,
-          backgroundColor: '#ffffff',
-          hoverBackgroundColor: '#ffffff',
-          anchor: 'start',
-        }],
-      },
-      options: {
-        plugins: {
-          datalabels: {
-            font: {
-              size: 13,
-            },
-            color: '#000000',
-            anchor: 'end',
-            align: 'start',
-            formatter: (val) => `${humanizeDuration(val)}`,
-          },
-        },
-        title: {
-          display: true,
-          text: 'TIME-SPEND',
-          fontColor: '#000000',
-          fontSize: 23,
-          position: 'left',
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              fontColor: '#000000',
-              padding: 5,
-              fontSize: 13,
-              callback: (val) => `${val.toUpperCase()}`,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            barThickness: 44,
-          }],
-          xAxes: [{
-            ticks: {
-              display: false,
-              beginAtZero: true,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            minBarLength: 50,
-          }],
-        },
-        legend: {
-          display: false,
-        },
-        tooltips: {
-          enabled: false,
-        },
-      },
-    });
+    setOptions(timeCtx, getTypesUniq(events), durationEventTypes, (val) => `${humanizeDuration(val)}`);
   }
 
   getTemplate() {
@@ -246,6 +60,7 @@ export default class Statistics extends SmartView {
         <div class="statistics__item statistics__item--time-spend">
           <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
         </div>
+
     </section>`
     );
   }
@@ -256,7 +71,7 @@ export default class Statistics extends SmartView {
 
   _setCharts() {
     // Для отрисовки трёх графиков
-    if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
+    if (![this._moneyChart, this._typeChart, this._timeChart].includes(null)) {
       this._moneyChart = null;
       this._typeChart = null;
       this._timeChart = null;

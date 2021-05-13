@@ -18,7 +18,8 @@ export default class Sort extends AbstractView {
               type="radio"
               name="trip-sort"
               value="sort-day"
-              data-sort-type="${SortType.DEFAULT}" ${this._currentSortType === SortType.DEFAULT ? 'checked' : ''}
+              data-sort-type="${SortType.DEFAULT}"
+              ${this._currentSortType === SortType.DEFAULT ? 'checked' : ''}
             />
             <label class="trip-sort__btn" for="sort-day" data-sort-type="${SortType.DEFAULT}">Day</label>
           </div>
@@ -31,7 +32,8 @@ export default class Sort extends AbstractView {
               id="sort-time"
               class="trip-sort__input  visually-hidden"
               type="radio" name="trip-sort" value="sort-time"
-              data-sort-type="${SortType.TIME}" ${this._currentSortType === SortType.TIME ? 'checked' : ''}
+              data-sort-type="${SortType.TIME}"
+              ${this._currentSortType === SortType.TIME ? 'checked' : ''}
             />
             <label class="trip-sort__btn" for="sort-time" data-sort-type="${SortType.TIME}">Time</label>
           </div>
@@ -42,7 +44,8 @@ export default class Sort extends AbstractView {
               type="radio"
               name="trip-sort"
               value="sort-price"
-              data-sort-type="${SortType.PRICE}" ${this._currentSortType === SortType.PRICE ? 'checked' : ''}
+              data-sort-type="${SortType.PRICE}"
+              ${this._currentSortType === SortType.PRICE ? 'checked' : ''}
             />
             <label class="trip-sort__btn" for="sort-price" data-sort-type="${SortType.PRICE}">Price</label>
           </div>
