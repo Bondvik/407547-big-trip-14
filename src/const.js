@@ -50,11 +50,18 @@ const DEFAULT_EVENT = {
   isFavorite: 0,
 };
 
+const MenuItem = {
+  ADD_NEW_EVENT: 'ADD_NEW_EVENT',
+  TABLE: 'TABLE',
+  STATS: 'STATS',
+};
+
 export {
   Mode,
   SortType,
   UserAction,
   UpdateType,
   FilterType,
-  DEFAULT_EVENT
+  DEFAULT_EVENT,
+  MenuItem
 };

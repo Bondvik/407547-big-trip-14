@@ -20,6 +20,7 @@ export default class EventFormEdit extends SmartView {
       enableTime: true,
       time_24hr: true,
     };
+
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
@@ -62,8 +63,19 @@ export default class EventFormEdit extends SmartView {
     return eventTypes.reduce((accumulator, item) =>
       `${accumulator}
       <div class="event__type-item">
-        <input id="event-type-${item.type}-${this._data.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}">
-        <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-${this._data.id}" data-type=${item.type}>${item.name}</label>
+        <input
+          id="event-type-${item.type}-${this._data.id}"
+          class="event__type-input  visually-hidden"
+          type="radio" name="event-type"
+          value="${item.type}"
+        />
+        <label
+          class="event__type-label  event__type-label--${item.type}"
+          for="event-type-${item.type}-${this._data.id}"
+          data-type=${item.type}
+          >
+          ${item.name}
+        </label>
       </div>`, '');
   }
 
@@ -74,7 +86,12 @@ export default class EventFormEdit extends SmartView {
   _getEventOfferView(item) {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.eventOfferType}-1" type="checkbox" name="event-offer-${item.type}">
+        <input
+          class="event__offer-checkbox  visually-hidden"
+          id="event-offer-${item.eventOfferType}-1"
+          type="checkbox"
+          name="event-offer-${item.type}"
+        />
         <label class="event__offer-label" for="event-offer-${item.eventOfferType}-1">
           <span class="event__offer-title">${item.eventOfferName}</span>
           &plus;&euro;&nbsp;
@@ -161,7 +178,15 @@ export default class EventFormEdit extends SmartView {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${he.encode(String(this._data.eventTotal))}">
+              <input
+                class="event__input  event__input--price"
+                id="event-price-1"
+                type="number"
+                min="0"
+                step="1"
+                name="event-price"
+                value="${he.encode(String(this._data.eventTotal))}"
+              />
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
