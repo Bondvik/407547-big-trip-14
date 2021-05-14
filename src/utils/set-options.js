@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const setOptions = (chart, labels, data, callback) => {
+const setOptions = (chart, text, labels, data, callback) => {
   return new Chart(chart, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -28,7 +28,7 @@ const setOptions = (chart, labels, data, callback) => {
       },
       title: {
         display: true,
-        text: 'MONEY',
+        text: text,
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',
