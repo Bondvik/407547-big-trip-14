@@ -1,5 +1,4 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
-import {nanoid} from 'nanoid';
 import EventFormEditView from '../view/event-form-edit.js';
 import {UserAction, UpdateType, Mode, DEFAULT_EVENT} from '../const.js';
 
@@ -47,15 +46,33 @@ export default class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  //метод, который будет получать необходимое состояние от презентера trip и передавать его формы. Это необходимо для реализации обратной связи на события сохранения и удаления
+  setSaving() {
+    this._eventEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  //В презентераз формы добавления задачи используем метод (качания головой) в случае отмены действия
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventEditComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      Object.assign({id: nanoid()}, event),
+      event,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {

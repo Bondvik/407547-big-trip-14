@@ -1,7 +1,7 @@
 import {replace, render, PositionOfRender, remove} from '../utils/render.js';
 import EventView from '../view/event.js';
 import EventFormEditView from '../view/event-form-edit.js';
-import {Mode, UserAction, UpdateType} from '../const.js';
+import {Mode, State, UserAction, UpdateType} from '../const.js';
 
 export default class Point {
   constructor(tripEventsListElement, changeData, changeMode) {
@@ -14,6 +14,8 @@ export default class Point {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleFormClick = this._handleFormClick.bind(this);
+
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
 
@@ -33,7 +35,7 @@ export default class Point {
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._eventEditComponent.setFormClicktHandler(this._handleFormSubmit);
+    this._eventEditComponent.setFormClicktHandler(this._handleFormClick);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if ([prevEventComponent, prevEventEditComponent].includes(null)) {
@@ -49,12 +51,17 @@ export default class Point {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
+    if (this._mode === Mode.EDITING) {
+      replace(this._eventComponent, prevEventEditComponent);
+      this._mode = Mode.DEFAULT;
+    }
+
     remove(prevEventComponent);
     remove(prevEventEditComponent);
   }
 
   resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if(this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
     }
   }
@@ -78,6 +85,36 @@ export default class Point {
     );
   }
 
+  //добавим метод, который будет получать необходимое состояние от презентера trip и передавать его формы. Это необходимо для реализации обратной связи на события сохранения и удаления
+  setViewState(state) {
+    //в презентере точки используем метод (качания головой) в случае отмены действия
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   _replaceCardToForm() {
     replace(this._eventEditComponent, this._eventComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
@@ -95,7 +132,7 @@ export default class Point {
     if (['Escape', 'Esc'].includes(evt.key)) {
       evt.preventDefault();
       this._replaceFormToCard();
-      document.removeEventListener('keydown', this.__escKeyDownHandler);
+      document.removeEventListener('keydown', this._escKeyDownHandler);
     }
   }
 
@@ -109,6 +146,9 @@ export default class Point {
       UpdateType.MINOR,
       point,
     );
+  }
+
+  _handleFormClick() {
     this._replaceFormToCard();
   }
 

@@ -7,33 +7,21 @@ import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
 import TripCostView from './view/trip-cost.js';
 import StatisticsView from './view/statistics.js';
-import {createEvent} from './mock/event.js';
 import {MenuItem, UpdateType, FilterType} from './const.js';
+import {saveDestinations, saveOffers} from './utils/event.js';
+import Api from './api.js';
 
-let statisticsComponent = null;
+const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+const AUTHORIZATION = 'Basic 7vgb34kDYU-RqmYwvYyh0';
 
-const EVENT_COUNT = 4;
-const events = new Array(EVENT_COUNT).fill().map(createEvent);
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
-
 const filterModel = new FilterModel();
-
-//Инфо о маршруте
-const tripMainElement = document.querySelector('.trip-main');
-const TripInfoComponent = new TripInfoView(events);
-render(tripMainElement, TripInfoComponent.getElement(), PositionOfRender.AFTERBEGIN);
-
-//Стоимость маршрута
-const tripInfoElement = tripMainElement.querySelector('.trip-info');
-const TripCostComponent = new TripCostView(events);
-render(tripInfoElement, TripCostComponent, PositionOfRender.BEFOREEND);
 
 //Навигация
 const pageNavigationElement = document.querySelector('.trip-controls__navigation');
 const pageNavigationComponent = new PageNavigationView();
-render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
 
 //Фильтры
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
@@ -44,10 +32,14 @@ const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
 //Точки маршрута и формы добавления/редактирования маршрута
-const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel);
+const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel, api);
 
-filterPresenter.init();
-tripPresenter.init();
+const handleEventNewFormClose = () => {
+  remove(statisticsComponent);
+  pageNavigationComponent.setMenuItem(MenuItem.TABLE);
+};
+
+let statisticsComponent = null;
 
 const handlePageMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -65,15 +57,10 @@ const handlePageMenuClick = (menuItem) => {
       tripPresenter.destroy();
       // Показать статистику
       statisticsComponent = new StatisticsView(eventsModel.getEvents());
-      render(pageMainElement, statisticsComponent, PositionOfRender.BEFOREEND);
+      render(pageMainElement, statisticsComponent, PositionOfRender.AFTERBEGIN);
       pageNavigationComponent.setMenuItem(MenuItem.STATS);
       break;
   }
-};
-
-const handleEventNewFormClose = () => {
-  remove(statisticsComponent);
-  pageNavigationComponent.setMenuItem(MenuItem.TABLE);
 };
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
@@ -84,4 +71,35 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   tripPresenter.createPoint(handleEventNewFormClose);
 });
 
-pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
+filterPresenter.init();
+tripPresenter.init();
+
+api.getDestinations()
+  .then((destinations) => {
+    saveDestinations(destinations);
+    return api.getOffers();
+  })
+  .then((offers) => {
+    saveOffers(offers);
+    return api.getPoints();
+  })
+  .then((points) => {
+    eventsModel.setEvents(UpdateType.INIT, points);
+
+    const tripMainElement = document.querySelector('.trip-main');
+    render(tripMainElement, new TripInfoView(points).getElement(), PositionOfRender.AFTERBEGIN);
+
+    const tripInfoElement = tripMainElement.querySelector('.trip-info');
+    render(tripInfoElement, new TripCostView(points), PositionOfRender.BEFOREEND);
+
+    render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
+    pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
+
+  })
+  .catch(() => {
+    eventsModel.setEvents(UpdateType.INIT, []);
+    render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
+    pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
+  });
+
+

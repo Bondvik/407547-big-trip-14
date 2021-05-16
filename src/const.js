@@ -6,6 +6,12 @@ const Mode = {
   ADD: 'ADD',
 };
 
+const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 const SortType = {
   DEFAULT: 'day',
   TIME: 'time',
@@ -24,6 +30,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const FilterType = {
@@ -34,11 +41,7 @@ const FilterType = {
 
 const DEFAULT_EVENT = {
   id: null,
-  eventType: {
-    type:'bus',
-    name: 'Bus',
-    icon: 'bus.png',
-  },
+  eventType: 'bus',
   eventCity: '',
   eventOffers: [],
   eventDestination: '',
@@ -48,6 +51,9 @@ const DEFAULT_EVENT = {
   eventDuration: '',
   eventTotal: 0,
   isFavorite: 0,
+  isDisabled: false,
+  isSaving: false,
+  isDeleting: false,
 };
 
 const MenuItem = {
@@ -58,6 +64,7 @@ const MenuItem = {
 
 export {
   Mode,
+  State,
   SortType,
   UserAction,
   UpdateType,
