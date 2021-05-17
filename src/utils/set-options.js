@@ -8,7 +8,7 @@ const setOptions = (chart, text, labels, data, callback) => {
     data: {
       labels: labels,
       datasets: [{
-        data: data,
+        data,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -28,7 +28,7 @@ const setOptions = (chart, text, labels, data, callback) => {
       },
       title: {
         display: true,
-        text: text,
+        text,
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',

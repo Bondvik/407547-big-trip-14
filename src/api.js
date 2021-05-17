@@ -7,11 +7,6 @@ const Method = {
   DELETE: 'DELETE',
 };
 
-const SuccessHTTPStatusRange = {
-  MIN: 200,
-  MAX: 299,
-};
-
 export default class Api {
   //endPoint - строка запроса
   constructor(endPoint, authorization) {
@@ -78,16 +73,15 @@ export default class Api {
       `${this._endPoint}/${url}`,
       {method, body, headers},
     )
-      .then(Api.checkStatus)
+      .then(Api.getServerResponse)
       .catch(Api.catchError);
   }
 
   //ответ сервера
-  static checkStatus(response) {
-    if (
-      response.status < SuccessHTTPStatusRange.MIN ||
-      response.status > SuccessHTTPStatusRange.MAX
-    ) {
+  static getServerResponse(response) {
+    const pattern = new RegExp(/^2[0-9]{2}$/);
+
+    if (!pattern.test(String(response.status))) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
 
