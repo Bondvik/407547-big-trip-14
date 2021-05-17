@@ -1,35 +1,36 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
-import {sortEventDown, compareEventPrice, sortEventDay} from '../mock/util.js';
-import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import {sortEventDown, compareEventPrice, sortEventDay} from '../utils/sort.js';
+import {SortType, UpdateType, UserAction, FilterType, State} from '../const.js';
 import PointPresenter from './point.js';
 import PointNewPresenter from './point-new.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
 import SortView from '../view/sort-list.js';
+import LoadingView from '../view/loading.js';
 import {filter} from '../utils/filter.js';
 
 export default class Trip {
-  constructor(tripEventsElement, eventsModel, filterModel) {
+  constructor(tripEventsElement, eventsModel, filterModel, api) {
     this._tripEventsContainer = tripEventsElement;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
 
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
+    this._loadingComponent = new LoadingView();
 
     this._tripEventsListContainer = null;
     this._sortComponent = null;
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleEventViewChange = this._handleEventViewChange.bind(this);
     this._handleEventModelChange = this._handleEventModelChange.bind(this);
-
-    this._eventsModel.addObserver(this._handleEventModelChange);
-    this._filterModel.addObserver(this._handleEventModelChange);
 
     this._pointNewPresenter = new PointNewPresenter(this._eventsListComponent, this._handleEventViewChange);
   }
@@ -42,6 +43,7 @@ export default class Trip {
     this._filterModel.addObserver(this._handleEventModelChange);
 
     this._renderEvents();
+    this._renderSort();
   }
 
   createPoint(callback) {
@@ -78,15 +80,43 @@ export default class Trip {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // updatePoint - обновленные данные
+    //Перед отправкой запроса на сервер просим презентеры точек или формы добавления точки заблокировать форму и установить состояние "Удаляется/добавляется".
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updatedType, updatedPoint);
+        this._eventPresenter[updatedPoint.id].setViewState(State.SAVING);
+        this._api.updatePoint(updatedPoint)
+          .then((response) => {
+            this._eventsModel.updateEvent(updatedType, response);
+          })
+          .catch(() => {
+            //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
+            this._eventPresenter[updatedPoint.id].setViewState(State.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updatedType, updatedPoint);
+        this._pointNewPresenter.setSaving();
+        this._api.addPoint(updatedPoint)
+          .then((response) => {
+            this._eventsModel.addEvent(updatedType, response);
+          })
+          .catch(() => {
+            //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
+            this._pointNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updatedType, updatedPoint);
+        this._eventPresenter[updatedPoint.id].setViewState(State.DELETING);
+        this._api.deletePoint(updatedPoint)
+          .then(() => {
+            // Обратите внимание, метод удаления задачи на сервере
+            // ничего не возвращает. Это и верно,
+            // ведь что можно вернуть при удалении задачи?
+            // Поэтому в модель мы всё также передаем update
+            this._eventsModel.deleteEvent(updatedType, updatedPoint);
+          })
+          .catch(() => {
+            this._eventPresenter[updatedPoint.id].setViewState(State.ABORTING);
+          });
         break;
     }
   }
@@ -102,14 +132,21 @@ export default class Trip {
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
         this._clearEventList({resetSortType: true});
+        this._renderSort();
+        this._renderEventsList();
+        this._renderEvents();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderEventsList();
         this._renderEvents();
         break;
     }
   }
 
-  _handleEventChange(updatedPoint) {
-    this._eventPresenter[updatedPoint.id].init(updatedPoint);
+  _handleEventChange(updatedTask) {
+    this._eventPresenter[updatedTask.id].init(updatedTask);
   }
 
   _handleSortTypeChange(sortType) {
@@ -133,7 +170,6 @@ export default class Trip {
   }
 
   _renderEventsList() {
-    this._renderSort();
     render(this._tripEventsContainer, this._eventsListComponent, PositionOfRender.BEFOREEND);
   }
 
@@ -144,14 +180,24 @@ export default class Trip {
   }
 
   _renderEvents() {
-    if (this.events && this.events.length) {
-      this.events.forEach((event) => {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
+    const events = this.events;
+    if (events && events.length) {
+      events.forEach((event) => {
         this._renderEvent(event);
       });
     } else {
       this._renderNoEvents();
     }
     render(this._tripEventsContainer, this._tripEventsListContainer, PositionOfRender.BEFOREEND);
+  }
+
+  _renderLoading() {
+    render(this._eventsListComponent, this._loadingComponent, PositionOfRender.AFTERBEGIN);
   }
 
   _renderNoEvents() {
@@ -165,6 +211,7 @@ export default class Trip {
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
     remove(this._listEmptyComponent);
+    remove(this._loadingComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

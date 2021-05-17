@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 
 const BAR_HEIGHT = 55;
-
-const getTypesUniq = (events) => {
-  const eventsTypes = events.map(({eventType: {type}}) => type);
-  return [...new Set(eventsTypes)];
+const TextChart = {
+  MONEY: 'MONEY',
+  TYPE: 'TYPE',
+  TIME: 'TIME-SPEND',
 };
 
 const getDuration = (startTime, endTime) => {
@@ -12,16 +12,16 @@ const getDuration = (startTime, endTime) => {
 };
 
 const getPriceByTripType = (events, type) => {
-  const eventsByType = events.filter(({eventType}) => eventType.type === type);
+  const eventsByType = events.filter(({eventType}) => eventType === type);
   return eventsByType.reduce((accumulator, item) => accumulator + item.eventTotal, 0);
 };
 
 const getCountByTripType = (events, type) => {
-  return events.filter(({eventType}) => eventType.type === type).length;
+  return events.filter(({eventType}) => eventType === type).length;
 };
 
 const getDurationByTripType = (events, type) => {
-  const eventsByType = events.filter(({eventType}) => eventType.type === type);
+  const eventsByType = events.filter(({eventType}) => eventType === type);
   const duration = eventsByType.reduce((accumulator, item) => {
     return accumulator + getDuration(item.eventStartTime, item.eventEndTime);
   }, 0 );
@@ -44,11 +44,17 @@ const humanizeDuration = (duration) => {
   }
 };
 
+const getTypesUniq = (events) => {
+  const eventsTypes = events.map(({eventType}) => eventType);
+  return [...new Set(eventsTypes)];
+};
+
 export {
   BAR_HEIGHT,
-  getTypesUniq,
+  TextChart,
   getPriceByTripType,
   getCountByTripType,
   getDurationByTripType,
-  humanizeDuration
+  humanizeDuration,
+  getTypesUniq
 };

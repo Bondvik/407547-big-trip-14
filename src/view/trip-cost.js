@@ -7,7 +7,7 @@ export default class TripCost extends AbstractView {
   }
 
   _getTotalPriceOfAllEvents(offers) {
-    return offers.reduce((accumulator, offer) => accumulator + offer.evantOfferPrice, 0);
+    return offers.reduce((accumulator, offer) => accumulator + offer.price, 0);
   }
 
   getTemplate() {

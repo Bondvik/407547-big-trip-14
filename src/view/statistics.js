@@ -2,6 +2,7 @@ import {setOptions} from '../utils/set-options.js';
 import SmartView from './smart.js';
 import {
   BAR_HEIGHT,
+  TextChart,
   getTypesUniq,
   getPriceByTripType,
   getCountByTripType,
@@ -25,7 +26,7 @@ export default class Statistics extends SmartView {
     const totalPriceByTypes = getTypesUniq(events).map((item) => getPriceByTripType(events, item));
     moneyCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    setOptions(moneyCtx, getTypesUniq(events), totalPriceByTypes, (val) => `€ ${val}`);
+    setOptions(moneyCtx, TextChart.MONEY, getTypesUniq(events), totalPriceByTypes, (val) => `€ ${val}`);
   }
 
   _renderTypeChart(typeCtx, events) {
@@ -33,7 +34,7 @@ export default class Statistics extends SmartView {
     const countByEventTypes = getTypesUniq(events).map((item) => getCountByTripType(events, item));
     typeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    setOptions(typeCtx, getTypesUniq(events), countByEventTypes, (val) => `${val}x`);
+    setOptions(typeCtx, TextChart.TYPE, getTypesUniq(events), countByEventTypes, (val) => `${val}x`);
   }
 
   _renderTimeChart(timeCtx, events) {
@@ -41,7 +42,7 @@ export default class Statistics extends SmartView {
     const durationEventTypes = getTypesUniq(events).map((item) => getDurationByTripType(events, item));
     timeCtx.height = BAR_HEIGHT * getTypesUniq(events).length;
 
-    setOptions(timeCtx, getTypesUniq(events), durationEventTypes, (val) => `${humanizeDuration(val)}`);
+    setOptions(timeCtx, TextChart.TIME, getTypesUniq(events), durationEventTypes, (val) => `${humanizeDuration(val)}`);
   }
 
   getTemplate() {
