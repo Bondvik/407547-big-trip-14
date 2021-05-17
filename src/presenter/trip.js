@@ -61,8 +61,8 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleEventModelChange);
   }
 
-  _getEvents() {
-    const filterType = this._filterModel.getFilter();
+  get events() {
+    const filterType = this._filterModel.filter;
     const events = this._eventsModel.getEvents();
     const filtredEvents = filter[filterType](events);
     switch (this._currentSortType) {
@@ -185,7 +185,7 @@ export default class Trip {
       return;
     }
 
-    const events = this._getEvents();
+    const events = this.events;
     if (events && events.length) {
       events.forEach((event) => {
         this._renderEvent(event);
@@ -217,7 +217,6 @@ export default class Trip {
       this._currentSortType = SortType.DEFAULT;
       remove(this._sortComponent);
     }
-
   }
 
   _handleModeChange() {
