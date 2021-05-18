@@ -23,7 +23,6 @@ const getEventDuration = (from, end) => {
   }
 
   return dayjs().date(days).hour(hours).minute(minutes).format('DD[D] HH[H] mm[M]');
-
 };
 
 const saveDestinations = (data) => {

@@ -50,18 +50,19 @@ export default class Events extends Observer {
 
   static adaptToClient(event) {
     const {base_price, date_from, date_to, destination, id, is_favorite, offers, type} = event;
+    const {name, description, pictures} = destination;
     const eventStartTime = date_from === null ? null : new Date(date_from);
     const eventEndTime = date_to === null ? null : new Date(date_to);
     offers.forEach((item) => item.isChecked = true);
     const adaptedEvent = Object.assign(
       {},
       {
-        id: id,
+        id,
         eventType: type,
-        eventCity: destination.name,
+        eventCity: name,
         eventOffers: offers,
-        eventDestination: destination.description,
-        eventPhotos: destination.pictures,
+        eventDestination: description,
+        eventPhotos: pictures,
         eventStartTime,
         eventEndTime,
         eventDuration: getEventDuration(eventStartTime, eventEndTime),
@@ -73,21 +74,33 @@ export default class Events extends Observer {
   }
 
   static adaptToServer(event) {
+    const {
+      eventTotal,
+      eventStartTime,
+      eventEndTime,
+      eventDestination,
+      eventPhotos,
+      eventCity,
+      id,
+      isFavorite,
+      eventOffers,
+      eventType,
+    } = event;
     const adaptedEvent = Object.assign(
       {},
       {
-        'base_price': event.eventTotal,
-        'date_from': event.eventStartTime instanceof Date ? event.eventStartTime.toISOString() : null, // На сервере дата хранится в ISO формате
-        'date_to': event.eventEndTime instanceof Date ? event.eventEndTime.toISOString() : null,
+        'base_price': eventTotal,
+        'date_from': eventStartTime instanceof Date ? eventStartTime.toISOString() : null, // На сервере дата хранится в ISO формате
+        'date_to': eventEndTime instanceof Date ? eventEndTime.toISOString() : null,
         'destination': {
-          'description': event.eventDestination ? event.eventDestination : '',
-          'pictures': event.eventPhotos ? event.eventPhotos : [],
-          'name': event.eventCity ? event.eventCity : '',
+          'description': eventDestination ? eventDestination : '',
+          'pictures': eventPhotos ? eventPhotos : [],
+          'name': eventCity ? eventCity : '',
         },
-        'id': event.id,
-        'is_favorite': event.isFavorite ? event.isFavorite : false,
-        'offers': event.eventOffers ? event.eventOffers : [],
-        'type': event.eventType ? event.eventType : 'bus',
+        'id': id,
+        'is_favorite': isFavorite ? isFavorite : false,
+        'offers': eventOffers ? eventOffers : [],
+        'type': eventType ? eventType : 'bus',
       },
     );
 

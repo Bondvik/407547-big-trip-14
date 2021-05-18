@@ -73,14 +73,14 @@ export default class Api {
       `${this._endPoint}/${url}`,
       {method, body, headers},
     )
-      .then(Api.getServerResponse)
+      .then(Api.getResponse)
       .catch(Api.catchError);
   }
 
   //ответ сервера
-  static getServerResponse(response) {
-    const pattern = new RegExp(/^2[0-9]{2}$/);
-    if (!pattern.test(String(response.status))) {
+  static getResponse(response) {
+    const successfulResponce = new RegExp(/^2[0-9]{2}$/);
+    if (!successfulResponce.test(String(response.status))) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
 
