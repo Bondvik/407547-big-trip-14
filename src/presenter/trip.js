@@ -43,14 +43,12 @@ export default class Trip {
   init() {
     this._renderEventsList();
     this._tripEventsListContainer = document.querySelector('.trip-events__list');
-    
+
     this._eventsModel.addObserver(this._handleEventModelChange);
     this._filterModel.addObserver(this._handleEventModelChange);
-    
+
     this._renderEvents();
     this._renderSort();
-
-    //this._renderCost();
   }
 
   createPoint(callback) {
