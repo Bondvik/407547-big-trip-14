@@ -10,12 +10,12 @@ export default class TripCost extends AbstractView {
     return offers.reduce((accumulator, offer) => accumulator + offer.price, 0);
   }
 
-  getTemplate() {
+  getTemplate(events = this._events) {
     const offersPrice = {
       trip: 0,
       offer: 0,
     };
-    this._events.forEach(({eventOffers, eventTotal}) => {
+    events.forEach(({eventOffers, eventTotal}) => {
       offersPrice.trip += eventTotal;
       offersPrice.offer += this._getTotalPriceOfAllEvents(eventOffers);
     });

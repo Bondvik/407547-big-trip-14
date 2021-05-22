@@ -7,6 +7,8 @@ import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
 import SortView from '../view/sort-list.js';
 import LoadingView from '../view/loading.js';
+import TripCostView from '../view/trip-cost.js';
+import TripInfoView from '../view/trip-info.js';
 import {filter} from '../utils/filter.js';
 
 export default class Trip {
@@ -18,9 +20,12 @@ export default class Trip {
     this._eventsListComponent = new EventsListView();
     this._listEmptyComponent = new ListEmptyView();
     this._loadingComponent = new LoadingView();
+    this._tripInfoComponent = null;
+    this._tripCostComponent = null;
 
     this._tripEventsListContainer = null;
     this._sortComponent = null;
+    this._tripInfoContainer = null;
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
@@ -38,12 +43,14 @@ export default class Trip {
   init() {
     this._renderEventsList();
     this._tripEventsListContainer = document.querySelector('.trip-events__list');
-
+    
     this._eventsModel.addObserver(this._handleEventModelChange);
     this._filterModel.addObserver(this._handleEventModelChange);
-
+    
     this._renderEvents();
     this._renderSort();
+
+    //this._renderCost();
   }
 
   createPoint(callback) {
@@ -75,6 +82,13 @@ export default class Trip {
     }
   }
 
+  _renderConstInfo() {
+    remove(this._tripInfoComponent);
+    remove(this._tripCostComponent);
+    this._renderInfo();
+    this._renderCost();
+  }
+
   _handleEventViewChange(actionType, updatedType, updatedPoint) {
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
@@ -87,6 +101,7 @@ export default class Trip {
         this._api.updatePoint(updatedPoint)
           .then((response) => {
             this._eventsModel.updateEvent(updatedType, response);
+            this._renderConstInfo();
           })
           .catch(() => {
             //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
@@ -98,6 +113,7 @@ export default class Trip {
         this._api.addPoint(updatedPoint)
           .then((response) => {
             this._eventsModel.addEvent(updatedType, response);
+            this._renderConstInfo();
           })
           .catch(() => {
             //на случай ошибки сетевого запроса вызовем метод (качания головой) дочерних презентеров
@@ -113,6 +129,7 @@ export default class Trip {
             // ведь что можно вернуть при удалении задачи?
             // Поэтому в модель мы всё также передаем update
             this._eventsModel.deleteEvent(updatedType, updatedPoint);
+            this._renderConstInfo();
           })
           .catch(() => {
             this._eventPresenter[updatedPoint.id].setViewState(State.ABORTING);
@@ -141,6 +158,8 @@ export default class Trip {
         remove(this._loadingComponent);
         this._renderEventsList();
         this._renderEvents();
+        this._renderInfo();
+        this._renderCost();
         break;
     }
   }
@@ -202,6 +221,24 @@ export default class Trip {
 
   _renderNoEvents() {
     render(this._tripEventsListContainer, this._listEmptyComponent, PositionOfRender.BEFOREEND);
+  }
+
+  _renderCost() {
+    if (this._tripCostComponent !== null) {
+      this._tripCostComponent = null;
+    }
+    this._tripInfoContainer = document.querySelector('.trip-info');
+    this._tripCostComponent = new TripCostView(this._eventsModel.getEvents());
+    render(this._tripInfoContainer, this._tripCostComponent, PositionOfRender.BEFOREEND);
+  }
+
+  _renderInfo() {
+    if (this._tripInfoComponent !== null) {
+      this._tripInfoComponent = null;
+    }
+    const tripMainElement = document.querySelector('.trip-main');
+    this._tripInfoComponent = new TripInfoView(this._eventsModel.getEvents());
+    render(tripMainElement, this._tripInfoComponent.getElement(), PositionOfRender.AFTERBEGIN);
   }
 
   _clearEventList({resetSortType = false} = {}) {

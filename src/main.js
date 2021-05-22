@@ -3,9 +3,7 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import EventsModel from './model/events.js';
 import FilterModel from './model/filters.js';
-import TripInfoView from './view/trip-info.js';
 import PageNavigationView from './view/page-navigation.js';
-import TripCostView from './view/trip-cost.js';
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from './const.js';
 import {saveDestinations, saveOffers} from './utils/event.js';
@@ -80,12 +78,6 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])
     saveDestinations(destinations);
     saveOffers(offers);
     eventsModel.setEvents(UpdateType.INIT, points);
-
-    const tripMainElement = document.querySelector('.trip-main');
-    render(tripMainElement, new TripInfoView(points).getElement(), PositionOfRender.AFTERBEGIN);
-
-    const tripInfoElement = tripMainElement.querySelector('.trip-info');
-    render(tripInfoElement, new TripCostView(points), PositionOfRender.BEFOREEND);
 
     render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
