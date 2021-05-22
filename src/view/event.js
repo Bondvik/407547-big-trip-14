@@ -69,7 +69,8 @@ export default class Event extends AbstractView {
             <span class="visually-hidden">Open event</span>
           </button>
         </div>
-      </li>`);
+      </li>`
+    );
   }
 
   _editClickHandler(evt) {

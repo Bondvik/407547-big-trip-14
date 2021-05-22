@@ -266,6 +266,7 @@ export default class EventFormEdit extends SmartView {
     this._startDatePicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       Object.assign(this._datePickerConfig, {
+        minDate: new Date(),
         defaultDate: this._data.eventStartTime,
         onChange: this._startTimeChangeHandler,
       }));

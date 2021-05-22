@@ -9,7 +9,7 @@ export default class Events extends Observer {
 
   setEvents(updatedType, events) {
     this._events = events.slice();
-    this._notify(updatedType);
+    this.notify(updatedType);
   }
 
   getEvents() {
@@ -26,13 +26,13 @@ export default class Events extends Observer {
 
     this._events.splice(index, 1, updatedPoint);
 
-    this._notify(updatedType, updatedPoint);
+    this.notify(updatedType, updatedPoint);
   }
 
   addEvent(updatedType, updatedPoint) {
     this._events.unshift(updatedPoint);
 
-    this._notify(updatedType, updatedPoint);
+    this.notify(updatedType, updatedPoint);
   }
 
   deleteEvent(updatedType, updatedPoint) {
@@ -45,7 +45,7 @@ export default class Events extends Observer {
 
     this._events.splice(index, 1);
 
-    this._notify(updatedType);
+    this.notify(updatedType);
   }
 
   static adaptToClient(event) {

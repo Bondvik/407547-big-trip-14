@@ -46,7 +46,8 @@ const replace = (newChild, oldChild) => {
   const parent = oldChild.parentElement;
 
   if (parent === null || oldChild === null || newChild === null) {
-    throw new Error('Can\'t replace unexisting elements');
+    // eslint-disable-next-line quotes
+    throw new Error(`Can't replace unexisting elements`);
   }
 
   parent.replaceChild(newChild, oldChild);
@@ -57,7 +58,8 @@ const remove = (component) => {
     return;
   }
   if (!(component instanceof Abstract)) {
-    throw new Error('Can remove only components');
+    // eslint-disable-next-line quotes
+    throw new Error(`Can't remove only components`);
   }
   component.getElement().remove();
   component.removeElement();

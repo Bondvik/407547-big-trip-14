@@ -1,5 +1,5 @@
 import {render, PositionOfRender, remove} from '../utils/render.js';
-import EventFormEditView from '../view/event-form-edit.js';
+import EventFormEditView from '../view/event-form.js';
 import {UserAction, UpdateType, Mode, DEFAULT_EVENT} from '../const.js';
 
 export default class PointNew {

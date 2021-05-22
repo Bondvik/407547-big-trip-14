@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const setOptions = (chart, text, labels, data, callback) => {
+const getOptions = (chart, text, labels, data, callback) => {
   return new Chart(chart, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -69,4 +69,4 @@ const setOptions = (chart, text, labels, data, callback) => {
   });
 };
 
-export {setOptions};
+export {getOptions};

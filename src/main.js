@@ -74,16 +74,11 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 filterPresenter.init();
 tripPresenter.init();
 
-api.getDestinations()
-  .then((destinations) => {
+Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])
+  .then((values) => {
+    const [destinations, offers, points] = values;
     saveDestinations(destinations);
-    return api.getOffers();
-  })
-  .then((offers) => {
     saveOffers(offers);
-    return api.getPoints();
-  })
-  .then((points) => {
     eventsModel.setEvents(UpdateType.INIT, points);
 
     const tripMainElement = document.querySelector('.trip-main');
@@ -94,12 +89,9 @@ api.getDestinations()
 
     render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
-
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
     render(pageNavigationElement, pageNavigationComponent, PositionOfRender.BEFOREEND);
     pageNavigationComponent.setMenuClickHandler(handlePageMenuClick);
   });
-
-
