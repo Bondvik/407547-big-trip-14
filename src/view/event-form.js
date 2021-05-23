@@ -115,14 +115,6 @@ export default class EventFormEdit extends SmartView {
     );
   }
 
-  _createFormatForDatePicker(data) {
-    return Object.assign({
-      dateFormat: 'd/m/y H:i',
-      enableTime: true,
-      time_24hr: true,
-    }, data);
-  }
-
   _createRollUpButtonTemplate(mode) {
     return mode === Mode.EDITING ? `<button class="event__rollup-btn" type="button">
                                   <span class="visually-hidden">Open event</span>
@@ -266,7 +258,7 @@ export default class EventFormEdit extends SmartView {
     this._startDatePicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       Object.assign(this._datePickerConfig, {
-        minDate: new Date(),
+        minDate: this._data.eventStartTime,
         defaultDate: this._data.eventStartTime,
         onChange: this._startTimeChangeHandler,
       }));
