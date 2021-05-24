@@ -20,6 +20,7 @@ export default class EventForm extends SmartView {
     this._datePickerConfig = {
       dateFormat: 'd/m/y H:i',
       enableTime: true,
+      'time_24hr': true,
     };
 
     //клонируем объект (для возврата карточки точки маршрута в состояние до изменений)
