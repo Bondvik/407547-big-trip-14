@@ -117,6 +117,13 @@ export default class Point {
 
   _replaceCardToForm() {
     replace(this._eventEditComponent, this._eventComponent);
+    //чтобы при переключении с карточки на карточку сбрасывать не сохраненные offers
+    let cloneData = null;
+    cloneData = JSON.parse(JSON.stringify(this._event));
+    cloneData.eventStartTime = this._event.eventStartTime;
+    cloneData.eventEndTime = this._event.eventEndTime;
+    this._eventEditComponent.updateData(cloneData);
+
     document.addEventListener('keydown', this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
