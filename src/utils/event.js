@@ -51,6 +51,14 @@ const getOffers = () => {
   return offers.map(({type}) => type);
 };
 
+const getClonedData = (data) => {
+  let cloneData = null;
+  cloneData = JSON.parse(JSON.stringify(data));
+  cloneData.eventStartTime = data.eventStartTime;
+  cloneData.eventEndTime = data.eventEndTime;
+  return cloneData;
+};
+
 export {
   getEventDuration,
   getCityDescription,
@@ -58,5 +66,6 @@ export {
   getCities,
   saveOffers,
   getOffer,
-  getOffers
+  getOffers,
+  getClonedData
 };

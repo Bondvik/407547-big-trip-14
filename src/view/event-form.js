@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import he from 'he';
-import {getCityDescription, getCities, getOffer, getOffers} from '../utils/event.js';
+import {getCityDescription, getCities, getOffer, getOffers, getClonedData} from '../utils/event.js';
 import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -24,9 +24,7 @@ export default class EventForm extends SmartView {
     };
 
     //клонируем объект (для возврата карточки точки маршрута в состояние до изменений)
-    this._cloneData = JSON.parse(JSON.stringify(this._data));
-    this._cloneData.eventStartTime = this._data.eventStartTime;
-    this._cloneData.eventEndTime = this._data.eventEndTime;
+    this._cloneData = getClonedData(this._data);
 
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -313,9 +311,7 @@ export default class EventForm extends SmartView {
   _formClickHandler(evt) {
     evt.preventDefault();
     //здесь возвращаем карточку в состояние до редактирования
-    const cloneData = JSON.parse(JSON.stringify(this._cloneData));
-    cloneData.eventStartTime = this._cloneData.eventStartTime;
-    cloneData.eventEndTime = this._cloneData.eventEndTime;
+    const cloneData = getClonedData(this._cloneData);
     this.updateData(cloneData);
     this._callback.formClick(this._cloneData);
   }
