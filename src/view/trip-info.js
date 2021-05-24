@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
 
+const MAX_COUNT_CITIES = 3;
+
 export default class TripInfo extends AbstractView {
   constructor(events) {
     super();
@@ -14,7 +16,7 @@ export default class TripInfo extends AbstractView {
 
   _getTripCities(sortingTrip) {
     const cities = sortingTrip.map(({eventCity}) => eventCity);
-    if (cities.length > 3) {
+    if (cities.length > MAX_COUNT_CITIES) {
       return `${cities[0]} &mdash; ... &mdash; ${cities[[cities.length - 1]]}`;
     }
     return cities.join(' &mdash; ');

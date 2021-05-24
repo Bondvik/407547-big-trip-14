@@ -20,8 +20,7 @@ export default class Events extends Observer {
     const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
-      // eslint-disable-next-line quotes
-      throw new Error(`Can't update unexisting event`);
+      throw new Error('Can\'t update unexisting event');
     }
 
     this._events.splice(index, 1, updatedPoint);
@@ -39,8 +38,7 @@ export default class Events extends Observer {
     const index = this._events.findIndex(({id}) => id === updatedPoint.id);
 
     if (index === -1) {
-      // eslint-disable-next-line quotes
-      throw new Error(`Can't delete unexisting event`);
+      throw new Error('Can\'t delete unexisting event');
     }
 
     this._events.splice(index, 1);
@@ -49,10 +47,19 @@ export default class Events extends Observer {
   }
 
   static adaptToClient(event) {
-    const {base_price, date_from, date_to, destination, id, is_favorite, offers, type} = event;
+    const {
+      base_price: basePrice, 
+      date_from: dateFrom, 
+      date_to: dateTo, 
+      is_favorite: isFavorite, 
+      destination, 
+      id, 
+      offers, 
+      type
+    } = event;
     const {name, description, pictures} = destination;
-    const eventStartTime = date_from === null ? null : new Date(date_from);
-    const eventEndTime = date_to === null ? null : new Date(date_to);
+    const eventStartTime = dateFrom === null ? null : new Date(dateFrom);
+    const eventEndTime = dateTo === null ? null : new Date(dateTo);
     offers.forEach((item) => item.isChecked = true);
     const adaptedEvent = Object.assign(
       {},
@@ -63,11 +70,11 @@ export default class Events extends Observer {
         eventOffers: offers,
         eventDestination: description,
         eventPhotos: pictures,
+        eventDuration: getEventDuration(eventStartTime, eventEndTime),
+        eventTotal: basePrice,
         eventStartTime,
         eventEndTime,
-        eventDuration: getEventDuration(eventStartTime, eventEndTime),
-        eventTotal: base_price,
-        isFavorite: is_favorite,
+        isFavorite,
       },
     );
     return adaptedEvent;

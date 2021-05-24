@@ -6,21 +6,20 @@ import {Mode, DEFAULT_EVENT} from '../const.js';
 import SmartView from './smart.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
-export default class EventFormEdit extends SmartView {
+export default class EventForm extends SmartView {
   constructor(event = DEFAULT_EVENT, mode = Mode.EDITING) {
     super();
     this._offers = null;
     this._cloneData = null;
     this._mode = mode;
-    this._data = EventFormEdit.parseEventToData(event);
+    this._data = EventForm.parseEventToData(event);
 
     this._datepicker = null;
     this._startDatePicker = null;
     this._endDatePicker = null;
     this._datePickerConfig = {
       dateFormat: 'd/m/y H:i',
-      enableTime: true,
-      time_24hr: true,
+      enableTime: true
     };
 
     //клонируем объект (для возврата карточки точки маршрута в состояние до изменений)
@@ -194,7 +193,7 @@ export default class EventFormEdit extends SmartView {
                 class="event__input  event__input--price"
                 id="event-price-1"
                 type="number"
-                min="0"
+                min="1"
                 step="1"
                 name="event-price"
                 value="${he.encode(String(this._data.eventTotal))}"
@@ -244,7 +243,7 @@ export default class EventFormEdit extends SmartView {
   }
 
   reset(event) {
-    this.updateData(EventFormEdit.parseEventToData(event));
+    this.updateData(EventForm.parseEventToData(event));
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
@@ -307,7 +306,7 @@ export default class EventFormEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventFormEdit.parseDataToEvent(this._data));
+    this._callback.formSubmit(EventForm.parseDataToEvent(this._data));
   }
 
   _formClickHandler(evt) {
@@ -380,7 +379,7 @@ export default class EventFormEdit extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EventFormEdit.parseDataToEvent(this._data));
+    this._callback.deleteClick(EventForm.parseDataToEvent(this._data));
   }
 
   //превращение данных - в состояние

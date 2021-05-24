@@ -5,7 +5,7 @@ import PointPresenter from './point.js';
 import PointNewPresenter from './point-new.js';
 import EventsListView from '../view/events-list.js';
 import ListEmptyView from '../view/list-empty.js';
-import SortView from '../view/sort-list.js';
+import SortView from '../view/sort.js';
 import LoadingView from '../view/loading.js';
 import TripCostView from '../view/trip-cost.js';
 import TripInfoView from '../view/trip-info.js';

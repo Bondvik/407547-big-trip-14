@@ -1,6 +1,6 @@
 import {replace, render, PositionOfRender, remove} from '../utils/render.js';
 import EventView from '../view/event.js';
-import EventFormEditView from '../view/event-form.js';
+import EventFormView from '../view/event-form.js';
 import {Mode, State, UserAction, UpdateType} from '../const.js';
 
 export default class Point {
@@ -30,7 +30,7 @@ export default class Point {
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventView(this._event);
-    this._eventEditComponent = new EventFormEditView(this._event);
+    this._eventEditComponent = new EventFormView(this._event);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);

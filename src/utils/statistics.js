@@ -39,9 +39,8 @@ const humanizeDuration = (duration) => {
     return dayjs().minute(minutes).format('mm[M]');
   } else if (days === 0) {
     return dayjs().hour(hours).minute(minutes).format('HH[H] mm[M]');
-  } else {
-    return dayjs().date(days).hour(hours).minute(minutes).format('DD[D] HH[H] mm[M]');
   }
+  return dayjs().date(days).hour(hours).minute(minutes).format('DD[D] HH[H] mm[M]');
 };
 
 const getTypesUniq = (events) => {
