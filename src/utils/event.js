@@ -1,12 +1,11 @@
 import dayjs from 'dayjs';
-// eslint-disable-next-line no-undef
-const duration = require('dayjs/plugin/duration');
+import durationPlugin from 'dayjs/plugin/duration';
 
 let destinations = [];
 let offers = [];
 
 const getEventDuration = (from, end) => {
-  dayjs.extend(duration);
+  dayjs.extend(durationPlugin);
   const fromEventTime = dayjs(from);
   const toEventTime = dayjs(end);
   const diff = toEventTime.diff(fromEventTime);
