@@ -29,6 +29,8 @@ export default class PointNew {
       this._destroyCallback();
     }
 
+    DEFAULT_EVENT.eventOffers.length = 0;
+
     this._eventEditComponent = new EventFormView(DEFAULT_EVENT, Mode.ADD);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
@@ -44,6 +46,7 @@ export default class PointNew {
       return;
     }
     this._tripEventAddButtonElement.disabled = false;
+
     remove(this._eventEditComponent);
     this._eventEditComponent = null;
 
