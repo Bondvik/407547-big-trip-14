@@ -312,7 +312,10 @@ export default class EventForm extends SmartView {
   _formClickHandler(evt) {
     evt.preventDefault();
     //здесь возвращаем карточку в состояние до редактирования
-    this.updateData(this._cloneData);
+    const cloneData = JSON.parse(JSON.stringify(this._cloneData));
+    cloneData.eventStartTime = this._cloneData.eventStartTime;
+    cloneData.eventEndTime = this._cloneData.eventEndTime;
+    this.updateData(cloneData);
     this._callback.formClick(this._cloneData);
   }
 
