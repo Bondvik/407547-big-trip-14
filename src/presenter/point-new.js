@@ -16,6 +16,9 @@ export default class PointNew {
   }
 
   init(callback) {
+    this._tripEventAddButtonElement = document.querySelector('.trip-main__event-add-btn');
+    this._tripEventAddButtonElement.disabled = true;
+
     this._destroyCallback = callback;
 
     if (this._eventEditComponent !== null) {
@@ -33,13 +36,14 @@ export default class PointNew {
     render(this._eventsListContainer, this._eventEditComponent, PositionOfRender.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
+
   }
 
   destroy() {
     if (this._eventEditComponent === null) {
       return;
     }
-
+    this._tripEventAddButtonElement.disabled = false;
     remove(this._eventEditComponent);
     this._eventEditComponent = null;
 

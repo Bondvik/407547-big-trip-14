@@ -48,14 +48,14 @@ export default class Events extends Observer {
 
   static adaptToClient(event) {
     const {
-      base_price: basePrice, 
-      date_from: dateFrom, 
-      date_to: dateTo, 
-      is_favorite: isFavorite, 
-      destination, 
-      id, 
-      offers, 
-      type
+      base_price: basePrice,
+      date_from: dateFrom,
+      date_to: dateTo,
+      is_favorite: isFavorite,
+      destination,
+      id,
+      offers,
+      type,
     } = event;
     const {name, description, pictures} = destination;
     const eventStartTime = dateFrom === null ? null : new Date(dateFrom);

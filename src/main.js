@@ -30,6 +30,7 @@ const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
 //Точки маршрута и формы добавления/редактирования маршрута
+const tripEventAddButtonElement = document.querySelector('.trip-main__event-add-btn');
 const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel, api);
 
 const handleEventNewFormClose = () => {
@@ -61,7 +62,7 @@ const handlePageMenuClick = (menuItem) => {
   }
 };
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+tripEventAddButtonElement.addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.destroy();
   tripPresenter.init();

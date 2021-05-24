@@ -43,6 +43,9 @@ export default class Trip {
   init() {
     this._renderEventsList();
     this._tripEventsListContainer = document.querySelector('.trip-events__list');
+    this._tripEventAddButtonElement = document.querySelector('.trip-main__event-add-btn');
+
+    this._tripEventAddButtonElement.disabled = false;
 
     this._eventsModel.addObserver(this._handleEventModelChange);
     this._filterModel.addObserver(this._handleEventModelChange);
@@ -201,7 +204,6 @@ export default class Trip {
       this._renderLoading();
       return;
     }
-
     const events = this.events;
     if (events && events.length) {
       events.forEach((event) => {
